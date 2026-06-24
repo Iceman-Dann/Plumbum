@@ -1,0 +1,23 @@
+FEATURE 2 — FOIA Letter Generator
+Add a new section to the result page below the "What should you do?" panel titled "Request your utility's records." This generates a ready-to-send legal FOIA public records request letter addressed to the user's specific water utility, demanding their lead service line inventory.
+Build a utilityData.ts file in /lib that maps water district names to their official mailing address, FOIA officer title, and state FOIA law name. Pre-populate it with at least 20 major utilities — Newark, Chicago, Detroit, Baltimore, Cleveland, Pittsburgh, Philadelphia, Milwaukee, Buffalo, Flint.
+On the result page, below the "What should you do?" dark section, add a new white section with an 11px all-caps gray label "LEGAL TOOLS" and a heading "Request your utility's lead pipe records." Body text: "Under state public records law, you have the right to request your water utility's full lead service line inventory. We've drafted the letter for you."
+Show a preview of the letter in a bordered text box, monospace font, fully editable. The letter reads:
+"[Date]
+[Utility FOIA Officer Title]
+
+[Utility Name]
+
+[Utility Address]
+Re: Public Records Request — Lead Service Line Inventory
+Dear Records Officer,
+Pursuant to [State FOIA Law Name], I hereby request a copy of your complete lead service line inventory for the service area covering [Address]. Specifically I request: (1) the number and location of known lead service lines in your system, (2) any lead service line replacement schedules, (3) all lead and copper rule compliance reports filed with the EPA in the past five years.
+I request that this information be provided within the statutory deadline. If any portion of this request is denied, please provide a written explanation citing the specific statutory exemption.
+Thank you for your assistance.
+[Name]
+
+[Email]
+
+[Date]"
+Above the preview show two small input fields — "Your name" and "Your email" — that auto-populate into the letter as the user types. Below the preview two buttons: "Copy letter" which copies the full text to clipboard with a confirmation toast, and "Download as PDF" which exports it using jsPDF in the same style as the risk report.
+Below the buttons add a small gray disclaimer: "Plumbum does not provide legal advice. This template is provided as a civic resource based on standard FOIA request language."

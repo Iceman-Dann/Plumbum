@@ -1,0 +1,171 @@
+.wrapper {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.containerCenter {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.hero {
+  padding: 120px 0 96px;
+  background-color: var(--color-surface);
+  text-align: center;
+}
+
+.headline {
+  font-family: var(--font-serif);
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heroBody {
+  font-size: 18px;
+  color: var(--color-gray);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.assetsSection {
+  padding: 96px 0;
+  background-color: #FFFFFF;
+}
+
+.assetsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.assetCard {
+  border: 1px solid var(--color-border);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.assetTitle {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.assetDesc {
+  font-size: 14px;
+  color: var(--color-gray);
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.assetMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+}
+
+.assetSize {
+  font-size: 11px;
+  color: var(--color-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.assetLink {
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  color: var(--color-text);
+}
+
+.findingsSection {
+  padding: 96px 0;
+  background-color: var(--color-bg);
+}
+
+.findingsContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.findingRow {
+  display: flex;
+  gap: 48px;
+  margin-bottom: 80px;
+  align-items: flex-start;
+}
+
+.findingNum {
+  font-family: var(--font-serif);
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.findingContent {
+  flex: 1;
+}
+
+.findingTitle {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.findingBody {
+  font-size: 16px;
+  color: var(--color-gray);
+  line-height: 1.6;
+}
+
+.contactSection {
+  padding: 120px 0;
+  background-color: #FFFFFF;
+  border-top: 1px solid var(--color-border);
+}
+
+.contactIntro {
+  font-size: 16px;
+  color: var(--color-gray);
+  margin-bottom: 16px;
+}
+
+.contactEmail {
+  display: inline-block;
+  font-size: 32px;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--color-accent);
+  text-decoration: underline;
+  margin-bottom: 32px;
+}
+
+.contactNote {
+  font-size: 14px;
+  color: var(--color-gray);
+}
+
+@media (max-width: 768px) {
+  .assetsGrid { grid-template-columns: 1fr; }
+  .findingRow { flex-direction: column; gap: 16px; }
+  .findingNum { font-size: 48px; }
+}
