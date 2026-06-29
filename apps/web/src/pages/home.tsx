@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useGetStats } from "@workspace/api-client-react";
 import SearchBar from "@/components/SearchBar";
 import { featuredCities } from "@/lib/featuredCities";
 import { useTranslation } from "@/hooks/useTranslation";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import styles from "../styles/home.module.css";
+
+const LeafletMap = lazy(() => import("@/components/map/leaflet-map"));
 
 // ---------------------------------------------------------------------------
 // Fetches a LIVE risk score from /api/risk for a single representative address.
@@ -90,6 +92,31 @@ function CityCard({ city }: { city: typeof featuredCities[0] }) {
 export default function Home() {
   const { t } = useTranslation();
   const { data: stats } = useGetStats();
+  const [, setLocation] = useLocation();
+  const [listingUrl, setListingUrl] = useState("");
+  const [urlLoading, setUrlLoading] = useState(false);
+
+  const citiesScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollCitiesLeft = () => {
+    if (citiesScrollRef.current) {
+      citiesScrollRef.current.scrollBy({ left: -320, behavior: "smooth" });
+    }
+  };
+
+  const scrollCitiesRight = () => {
+    if (citiesScrollRef.current) {
+      citiesScrollRef.current.scrollBy({ left: 320, behavior: "smooth" });
+    }
+  };
+
+  const handleListingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = listingUrl.trim();
+    if (!trimmed) return;
+    setUrlLoading(true);
+    setLocation(`/listing-result?url=${encodeURIComponent(trimmed)}`);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -99,21 +126,27 @@ export default function Home() {
           <div className={styles.heroLeft}>
             <div className={styles.telemetryBadge}>
               <span className={styles.liveIndicator}></span>
-              <strong>Index:</strong> {stats?.homes_at_risk ?? '9.2M'} homes at risk identified
+              INDEX: {stats?.homes_at_risk ?? '9.2M'} HOMES AT RISK IDENTIFIED
             </div>
             <h1 className={styles.headline}>{t.home.headline}</h1>
             <p className={styles.heroBody}>{t.home.subtext}</p>
             <div className={styles.searchBarWrapper}>
-              <SearchBar />
+              <SearchBar hideUrlForm={true} flat={true} />
             </div>
           </div>
           <div className={styles.heroRight}>
             <div className={styles.heroGraphicCard}>
-              <img 
-                src="/clean_home_water_graphic_1782610979792.png" 
-                alt="Clean Home Tap Water Assessment" 
-                className={styles.heroGraphic} 
-              />
+              <div className={styles.mapContainer}>
+                <Suspense fallback={<div className={styles.mapPlaceholder}>Loading telemetry map...</div>}>
+                  <LeafletMap
+                    lat={42.3314}
+                    lng={-83.0458}
+                    zoom={12}
+                    interactive={false}
+                    hideOverlays={false}
+                  />
+                </Suspense>
+              </div>
               {/* Floating Dossier Card Overlay */}
               <div className={styles.floatingDossier}>
                 <div className={styles.dossierHeader}>
@@ -163,7 +196,7 @@ export default function Home() {
       <section className={styles.arsenalSection}>
         <div className={styles.arsenalContainer}>
           <div className={styles.arsenalHeader}>
-            <h2 className={styles.arsenalTitle}>{t.home.civicArsenalTitle}</h2>
+            <h2 className={styles.arsenalTitle}>REMEDIATION PROTOCOLS</h2>
             <p className={styles.arsenalSubtitle}>{t.home.civicArsenalSubtitle}</p>
           </div>
           <div className={styles.arsenalGrid}>
@@ -190,16 +223,8 @@ export default function Home() {
               className={styles.arsenalCard}
             >
               <div className={styles.arsenalCardHeader}>
-                <div className={`${styles.iconBadge} ${styles.badgeTeal}`}>
-                  <svg className={styles.arsenalIcon} style={{ stroke: "#0D9488" }} width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="16" y1="13" x2="8" y2="13" />
-                    <line x1="16" y1="17" x2="8" y2="17" />
-                    <line x1="10" y1="9" x2="8" y2="9" />
-                  </svg>
-                </div>
-                <h3 className={styles.arsenalCardTitle}>{t.home.toolFoiaTitle}</h3>
+                <span className={styles.arsenalCardIndex}>01</span>
+                <h3 className={styles.arsenalCardTitle}>INITIATE PUBLIC RECORDS REQUEST</h3>
               </div>
               <p className={styles.arsenalCardDesc}>{t.home.toolFoiaDesc}</p>
               <div className={styles.arsenalAction}>LAUNCH DRAFT TOOL →</div>
@@ -228,17 +253,8 @@ export default function Home() {
               className={styles.arsenalCard}
             >
               <div className={styles.arsenalCardHeader}>
-                <div className={`${styles.iconBadge} ${styles.badgeBlue}`}>
-                  <svg className={styles.arsenalIcon} style={{ stroke: "#2563EB" }} width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 22h16" />
-                    <path d="M20 15v-5h2V6H2v4h2v5" />
-                    <path d="M12 2v4" />
-                    <path d="M3 6h18" />
-                    <path d="M9 10v5" />
-                    <path d="M15 10v5" />
-                  </svg>
-                </div>
-                <h3 className={styles.arsenalCardTitle}>{t.home.toolRepTitle}</h3>
+                <span className={styles.arsenalCardIndex}>02</span>
+                <h3 className={styles.arsenalCardTitle}>DEMAND REPRESENTATIVE INTERVENTION</h3>
               </div>
               <p className={styles.arsenalCardDesc}>{t.home.toolRepDesc}</p>
               <div className={styles.arsenalAction}>FIND REPRESENTATIVES →</div>
@@ -267,12 +283,8 @@ export default function Home() {
               className={styles.arsenalCard}
             >
               <div className={styles.arsenalCardHeader}>
-                <div className={`${styles.iconBadge} ${styles.badgeOrange}`}>
-                  <svg className={styles.arsenalIcon} style={{ stroke: "#EA580C" }} width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z" />
-                  </svg>
-                </div>
-                <h3 className={styles.arsenalCardTitle}>{t.home.toolFilterTitle}</h3>
+                <span className={styles.arsenalCardIndex}>03</span>
+                <h3 className={styles.arsenalCardTitle}>VERIFY FILTER CERTIFICATION</h3>
               </div>
               <p className={styles.arsenalCardDesc}>{t.home.toolFilterDesc}</p>
               <div className={styles.arsenalAction}>OPEN FILTER MATCHER →</div>
@@ -301,16 +313,8 @@ export default function Home() {
               className={styles.arsenalCard}
             >
               <div className={styles.arsenalCardHeader}>
-                <div className={`${styles.iconBadge} ${styles.badgePurple}`}>
-                  <svg className={styles.arsenalIcon} style={{ stroke: "#7C3AED" }} width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <line x1="9" y1="3" x2="9" y2="21" />
-                    <line x1="15" y1="3" x2="15" y2="21" />
-                    <line x1="3" y1="9" x2="21" y2="9" />
-                    <line x1="3" y1="15" x2="21" y2="15" />
-                  </svg>
-                </div>
-                <h3 className={styles.arsenalCardTitle}>{t.home.toolKitTitle}</h3>
+                <span className={styles.arsenalCardIndex}>04</span>
+                <h3 className={styles.arsenalCardTitle}>OBTAIN LABORATORY TEST KIT</h3>
               </div>
               <p className={styles.arsenalCardDesc}>{t.home.toolKitDesc}</p>
               <div className={styles.arsenalAction}>REQUEST TEST KIT →</div>
@@ -357,14 +361,163 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Journalist & Homebuyer Tools Section ── */}
+      <section className={styles.toolsSection}>
+        <div className={styles.toolsContainer}>
+          <div className={styles.toolsHeader}>
+            <h2 className={styles.toolsTitle}>Journalist & Homebuyer Tools</h2>
+            <p className={styles.toolsSubtitle}>
+              Analyze real estate listings and inspect pipeline data on the fly.
+            </p>
+          </div>
+          <div className={styles.toolsGrid}>
+            {/* Tool 1: Browser Extension */}
+            <div className={styles.toolCard}>
+              <div className={styles.toolIconWrap}>
+                <svg className={styles.toolIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <circle cx="12" cy="12" r="4" />
+                  <line x1="21.17" y1="8" x2="12" y2="8" />
+                  <line x1="3.95" y1="6.06" x2="8.54" y2="14" />
+                  <line x1="10.88" y1="21.94" x2="15.46" y2="14" />
+                </svg>
+              </div>
+              <h3 className={styles.toolCardTitle}>Browser Extension</h3>
+              <p className={styles.toolCardDesc}>
+                Add Plumbum's predictive lead water risk overlay directly onto Zillow and Redfin listings.
+              </p>
+              <Link href="/extension" className={styles.toolButton}>
+                Get Extension
+              </Link>
+            </div>
+
+            {/* Tool 2: URL Scanner */}
+            <div className={styles.toolCard}>
+              <div className={styles.toolIconWrap}>
+                <svg className={styles.toolIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                </svg>
+              </div>
+              <h3 className={styles.toolCardTitle}>Listing URL Scanner</h3>
+              <p className={styles.toolCardDesc}>
+                Paste any Zillow or Redfin property link below to scan construction records and fetch immediate risk ratings.
+              </p>
+              <form onSubmit={handleListingSubmit} className={styles.toolsUrlForm}>
+                <input
+                  type="url"
+                  placeholder="Paste Zillow or Redfin URL"
+                  value={listingUrl}
+                  onChange={(e) => setListingUrl(e.target.value)}
+                  className={styles.toolsUrlInput}
+                  required
+                />
+                <button type="submit" className={styles.toolsUrlButton} disabled={urlLoading}>
+                  {urlLoading ? "Scanning..." : "Scan URL"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className={styles.citiesSection}>
         <div className={styles.citiesContainer}>
-          <div className={styles.citiesLabel}>{t.home.citiesLabel}</div>
+          <div className={styles.citiesHeader}>
+            <div className={styles.citiesLabel}>{t.home.citiesLabel}</div>
+            <div className={styles.citiesScrollArrows}>
+              <button onClick={scrollCitiesLeft} className={styles.scrollArrowBtn} aria-label="Scroll left">←</button>
+              <button onClick={scrollCitiesRight} className={styles.scrollArrowBtn} aria-label="Scroll right">→</button>
+            </div>
+          </div>
 
-          <div className={styles.citiesScroll}>
+          <div className={styles.citiesScroll} ref={citiesScrollRef}>
             {featuredCities.map(city => (
               <CityCard key={city.slug} city={city} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Public Accountability Hub Section ── */}
+      <section className={styles.accountabilitySection}>
+        <div className={styles.accountabilityContainer}>
+          <div className={styles.accountabilityHeader}>
+            <span className={styles.telemetryDot} />
+            <h2 className={styles.accountabilityTitle}>Public Accountability Hub</h2>
+            <p className={styles.accountabilitySubtitle}>
+              Independent compliance directories monitoring community-wide lead water safety standards.
+            </p>
+          </div>
+          
+          <div className={styles.accountabilityGrid}>
+            {/* Left Side: School Compliance Audits */}
+            <div className={styles.hubCard}>
+              <div className={styles.hubCardHeader}>
+                <span className={styles.liveIndicatorGreen} />
+                <h3 className={styles.hubCardTitle}>School District Compliance</h3>
+              </div>
+              <p className={styles.hubCardDesc}>
+                Verify compliance records and review recent laboratory testing results for local K-12 public schools.
+              </p>
+              
+              <div className={styles.hubMockupTable}>
+                <div className={styles.hubTableHeader}>
+                  <span>School / Facility</span>
+                  <span>Test Value</span>
+                  <span>Compliance</span>
+                </div>
+                {[
+                  { name: "Lincoln Elementary School", val: "1.2 ppb", status: "PASS", cls: styles.passStatus },
+                  { name: "Cass Technical High School", val: "18.4 ppb", status: "EXCEEDED", cls: styles.failStatus },
+                  { name: "Cornerstone Charter Academy", val: "2.1 ppb", status: "PASS", cls: styles.passStatus },
+                ].map((s, idx) => (
+                  <div key={idx} className={styles.hubTableRow}>
+                    <span className={styles.hubSchoolName}>{s.name}</span>
+                    <span className={styles.hubSchoolVal}>{s.val}</span>
+                    <span className={`${styles.hubStatusBadge} ${s.cls}`}>{s.status}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/schools" className={styles.hubButton}>
+                School Directory →
+              </Link>
+            </div>
+
+            {/* Right Side: Landlord Compliance Tracker */}
+            <div className={styles.hubCard}>
+              <div className={styles.hubCardHeader}>
+                <span className={styles.liveIndicatorRed} />
+                <h3 className={styles.hubCardTitle}>Landlord Lead Registry</h3>
+              </div>
+              <p className={styles.hubCardDesc}>
+                Search tenant-submitted compliance records to verify if landlords have conducted mandatory plumbing inspections.
+              </p>
+              
+              <div className={styles.hubMockupTable}>
+                <div className={styles.hubTableHeader}>
+                  <span>Management Group / Landlord</span>
+                  <span>Property</span>
+                  <span>Response</span>
+                </div>
+                {[
+                  { name: "Kingswood Properties LLC", prop: "1822 Jefferson Ave", status: "REFUSED", cls: styles.failStatus },
+                  { name: "Metro Housing Group", prop: "3301 Gratiot Ave", status: "PENDING", cls: styles.pendingStatus },
+                  { name: "Urban Core Rentals", prop: "948 W Vernor Hwy", status: "AGREED", cls: styles.agreedStatus },
+                ].map((l, idx) => (
+                  <div key={idx} className={styles.hubTableRow}>
+                    <div>
+                      <span className={styles.hubLandlordName}>{l.name}</span>
+                      <span className={styles.hubLandlordProp}>{l.prop}</span>
+                    </div>
+                    <span className={`${styles.hubStatusBadge} ${l.cls}`}>{l.status}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/accountability" className={styles.hubButton}>
+                Tenant Registry →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -422,13 +575,40 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={styles.apiPromoSection}>
-        <div className={styles.apiPromoContainer}>
-          <h2 className={styles.apiPromoTitle}>{t.home.apiTitle}</h2>
-          <p className={styles.apiPromoBody}>{t.home.apiBody}</p>
-          <Link href="/api-docs" className={styles.apiPromoLink} data-testid="home-api-link">
-            {t.home.apiLink}
-          </Link>
+      {/* ── Built for Researchers API Section ── */}
+      <section className={styles.apiSection}>
+        <div className={styles.apiContainer}>
+          <div className={styles.apiLeft}>
+            <div className={styles.citiesEyebrow}>Developer API</div>
+            <h2 className={styles.apiTitle}>{t.home.apiTitle}</h2>
+            <p className={styles.apiBody}>{t.home.apiBody}</p>
+            <Link href="/api-docs" className={styles.apiLink} data-testid="home-api-link">
+              {t.home.apiLink}
+            </Link>
+          </div>
+          
+          <div className={styles.apiTerminal}>
+            <div className={styles.apiTerminalHeader}>
+              <span className={styles.apiTerminalShell}>bash</span>
+              <span className={styles.apiTerminalTitle}>GET /api/risk?address=124+Maple+St</span>
+            </div>
+            <pre className={styles.apiTerminalCode}>
+{`{
+  "address": "124 Maple St, Flint, MI 48503",
+  "score": 84,
+  "risk_level": "HIGH",
+  "factors": [
+    "construction_pre_1986",
+    "epa_violation_10yr"
+  ],
+  "telemetry": {
+    "lead_service_line": "LIKELY_LEAD",
+    "census_tract_fips": "26049000100",
+    "pwsid": "MI0002310"
+  }
+}`}
+            </pre>
+          </div>
         </div>
       </section>
     </div>

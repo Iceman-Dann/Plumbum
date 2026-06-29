@@ -10,12 +10,12 @@
   height: 64px;
   border: 2px solid var(--color-text);
   background: #FFFFFF;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
 }
 
 .searchForm:focus-within {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border-color: #000000;
+  border-width: 2.5px;
 }
 
 .searchForm.loading {
@@ -42,11 +42,15 @@
   border-radius: 0;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  transition: background 0.15s ease;
+  transition: none !important;
 }
 
 .button:hover:not(:disabled) {
   background: #B00F28;
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(2px);
 }
 
 .button:disabled {
@@ -360,6 +364,15 @@
   position: relative;
 }
 
+.searchCard.flatCard {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  max-width: 100% !important;
+}
+
 .impartialityBadge {
   margin-top: 18px;
   font-size: 12px;
@@ -473,3 +486,14 @@
   flex-shrink: 0;
   color: var(--color-text);
 }
+
+.flatImpartialityText {
+  margin-top: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-gray);
+  text-align: left;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+

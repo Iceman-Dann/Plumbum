@@ -11,6 +11,7 @@ interface SearchBarProps {
   onResult?: (result: RiskResult) => void;
   size?: "small" | "large";
   hideUrlForm?: boolean;
+  flat?: boolean;
 }
 
 export default function SearchBar({
@@ -18,6 +19,7 @@ export default function SearchBar({
   onResult,
   size = "large",
   hideUrlForm = false,
+  flat = false,
 }: SearchBarProps) {
   const { t } = useTranslation();
   const { isPregnant, setIsPregnant } = usePregnancyMode();
@@ -236,7 +238,7 @@ export default function SearchBar({
 
   return (
     <>
-      <div className={styles.searchCard}>
+      <div className={`${styles.searchCard} ${flat ? styles.flatCard : ""}`}>
         <div className={styles.searchWrapper}>
           <form onSubmit={handleSubmit} className={`${styles.searchForm} ${size === "small" ? styles.small : ""} ${isLoading ? styles.loading : ""}`}>
             <input
@@ -282,6 +284,12 @@ export default function SearchBar({
               </span>
             </label>
           </div>
+
+          {flat && (
+            <div className={styles.flatImpartialityText}>
+              {t.home.notACompany}
+            </div>
+          )}
 
           {/* Conditionally render suggestions or history dropdown */}
           {isFocused && (address.trim() ? suggestions.length > 0 : history.length > 0) && (
