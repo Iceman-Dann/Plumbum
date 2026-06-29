@@ -1,0 +1,242 @@
+/* ── Pediatrician Letter Section ───────────────────────────────────────────── */
+
+.section {
+  background: #FEFCF9;
+  padding: 64px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Section header ── */
+
+.sectionMeta {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+}
+
+.heading {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+
+.body {
+  font-size: 14px;
+  color: var(--color-gray);
+  max-width: 600px;
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+
+/* ── Input form ── */
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+  max-width: 720px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.inputLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #A8A09A;
+  font-size: 10px;
+}
+
+.input {
+  height: 40px;
+  border: 1.5px solid var(--color-border);
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--color-text);
+  background: #FFFFFF;
+  outline: none;
+  border-radius: 4px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.input:focus {
+  border-color: var(--color-text);
+}
+
+.input::placeholder {
+  color: #C8C0BA;
+}
+
+/* ── CDC context note ── */
+
+.cdcNote {
+  font-size: 12px;
+  color: var(--color-gray);
+  font-style: italic;
+  margin: 0 0 20px;
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+/* ── Letter preview textarea ── */
+
+.letterBox {
+  width: 100%;
+  max-width: 720px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 4px;
+  padding: 18px 20px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--color-text);
+  background: #FAFAF8;
+  resize: vertical;
+  outline: none;
+  display: block;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.letterBox:focus {
+  border-color: var(--color-text);
+}
+
+/* ── Action buttons ── */
+
+.buttonRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  max-width: 720px;
+}
+
+.copyBtn {
+  height: 40px;
+  padding: 0 22px;
+  border: 1.5px solid var(--color-text);
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: inherit;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.copyBtn:hover {
+  background: var(--color-text);
+  color: #FFFFFF;
+}
+
+.downloadBtn {
+  height: 40px;
+  padding: 0 22px;
+  border: none;
+  background: var(--color-text);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: inherit;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.downloadBtn:hover {
+  opacity: 0.85;
+}
+
+.downloadBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Find-a-doctor row ── */
+
+.findDoctorRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.findDoctorLink {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4A5C8A;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.15s ease;
+}
+
+.findDoctorLink:hover {
+  opacity: 0.75;
+}
+
+.findDoctorNote {
+  font-size: 11px;
+  color: var(--color-gray);
+}
+
+/* ── Disclaimer ── */
+
+.disclaimer {
+  font-size: 11px;
+  color: #A8A09A;
+  line-height: 1.55;
+  max-width: 640px;
+  margin: 0;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 600px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heading {
+    font-size: 22px;
+  }
+
+  .buttonRow {
+    flex-direction: column;
+  }
+
+  .copyBtn,
+  .downloadBtn {
+    width: 100%;
+  }
+}

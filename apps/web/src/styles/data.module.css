@@ -1,0 +1,216 @@
+.wrapper { background: #F4EFE8; min-height: 100vh; }
+
+/* ── Hero ── */
+.hero {
+  padding: 72px 24px 56px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroLabel {
+  font-size: 11px;
+  color: #7A6F65;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 12px;
+}
+
+.heroHeadline {
+  font-family: Inter, sans-serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: #1A1614;
+  line-height: 1.1;
+  margin: 0 0 18px;
+  max-width: 680px;
+}
+
+.heroBody {
+  font-size: 17px;
+  color: #7A6F65;
+  line-height: 1.65;
+  max-width: 600px;
+  margin-bottom: 32px;
+}
+
+.heroCite {
+  font-size: 13px;
+  color: #B5ADA6;
+  font-style: italic;
+}
+
+/* ── Stats grid ── */
+.statsSection {
+  background: #1A1614;
+  padding: 56px 24px;
+}
+
+.statsGrid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.statBox {
+  padding: 32px 32px;
+  border-right: 1px solid #333;
+}
+
+.statBox:last-child { border-right: none; }
+
+.statNum {
+  font-family: Inter, sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  color: #F4EFE8;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #7A6F65;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.statSub {
+  font-size: 13px;
+  color: #5A5048;
+  margin-top: 4px;
+}
+
+/* ── Download section ── */
+.downloadSection {
+  background: #FFFFFF;
+  border-top: 1px solid #D6CFC8;
+  padding: 64px 24px;
+}
+
+.downloadInner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.sectionMeta {
+  font-size: 11px;
+  color: #7A6F65;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+
+.sectionHeadline {
+  font-family: Inter, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1A1614;
+  margin: 0 0 12px;
+}
+
+.sectionBody {
+  font-size: 15px;
+  color: #7A6F65;
+  line-height: 1.6;
+  margin: 0 0 24px;
+  max-width: 600px;
+}
+
+.downloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 28px;
+  height: 48px;
+  background: #1A1614;
+  color: #FFFFFF;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: Inter, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.downloadBtn:hover { background: #333028; }
+
+/* ── Citation box ── */
+.citeSection {
+  background: #F4EFE8;
+  padding: 64px 24px;
+}
+
+.citeInner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.citeBox {
+  background: #FFFFFF;
+  border: 1.5px solid #D6CFC8;
+  padding: 28px 32px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  color: #5A5048;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.citeNote {
+  font-size: 13px;
+  color: #B5ADA6;
+  margin-top: 16px;
+}
+
+/* ── Schema section ── */
+.schemaSection {
+  background: #FFFFFF;
+  border-top: 1px solid #D6CFC8;
+  padding: 64px 24px;
+}
+
+.schemaInner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.fieldTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 16px;
+}
+
+.fieldTable thead { border-bottom: 2px solid #1A1614; }
+
+.fieldTable th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7A6F65;
+}
+
+.fieldTable td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #D6CFC8;
+  color: #1A1614;
+}
+
+.fieldTable td:first-child {
+  font-family: "Courier New", monospace;
+  color: #A63D2F;
+}
+
+@media (max-width: 768px) {
+  .heroHeadline { font-size: 34px; }
+  .statsGrid { grid-template-columns: 1fr 1fr; }
+  .statBox { border-right: none; border-bottom: 1px solid #333; }
+  .statBox:last-child { border-bottom: none; }
+}

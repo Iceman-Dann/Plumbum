@@ -1,0 +1,367 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Plumbum API - Lead pipe risk assessment
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: risk
+    description: Lead risk assessment
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /risk:
+    get:
+      operationId: getRisk
+      tags: [risk]
+      summary: Get lead risk score for an address
+      description: Geocodes the given address using the Census Geocoder and returns a real risk score based on EPA SDWIS violation data, US Census ACS housing age and income data, and a state-level regional prior.
+      parameters:
+        - name: address
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Full address string to assess (e.g. "123 Main St, Newark NJ")
+      responses:
+        "200":
+          description: Risk assessment result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiskResult"
+        "400":
+          description: Address is required or address is outside the US
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Address could not be geocoded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Address could not be geocoded (legacy)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [risk]
+      summary: Get aggregate statistics
+      description: Returns headline statistics shown on the landing page
+      responses:
+        "200":
+          description: Platform statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsResult"
+
+  /cache-stats:
+    get:
+      operationId: getCacheStats
+      tags: [risk]
+      summary: Get scoring engine cache statistics
+      description: Returns the number of census tracts cached in memory and EPA data load status. Useful for debugging and monitoring.
+      responses:
+        "200":
+          description: Cache statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CacheStats"
+
+  /neighborhood:
+    get:
+      operationId: getNeighborhood
+      tags: [risk]
+      summary: Get neighborhood heatmap points
+      description: Returns a 5x5 grid of 25 nearby points centered on coordinates, with tract-level risk scores.
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+          description: Latitude coordinate
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
+          description: Longitude coordinate
+      responses:
+        "200":
+          description: A list of 25 neighborhood grid points
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Missing latitude or longitude coordinates
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /representatives:
+    get:
+      operationId: getRepresentatives
+      tags: [civic]
+      summary: Get elected representatives for an address
+      description: Calls the Google Civic Information API to return federal and state representatives for a given address. Returns 503 if GOOGLE_CIVIC_API_KEY is not configured.
+      parameters:
+        - name: address
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Full address string to look up
+      responses:
+        "200":
+          description: Representatives list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RepresentativesResult"
+        "400":
+          description: Address is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Google Civic API key not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    RiskFactor:
+      type: object
+      required:
+        - name
+        - score
+        - max
+        - detail
+        - severity
+      properties:
+        name:
+          type: string
+          description: Human-readable factor name
+        score:
+          type: integer
+          description: Points scored for this factor (0–25)
+          minimum: 0
+          maximum: 25
+        max:
+          type: integer
+          description: Maximum possible points for this factor
+          enum: [25]
+        detail:
+          type: string
+          description: Human-readable explanation of the factor score with actual data values
+        severity:
+          type: string
+          description: Qualitative severity level for this factor
+          enum: [LOW, MODERATE, HIGH, VERY HIGH]
+
+    RiskResult:
+      type: object
+      required:
+        - address
+        - score
+        - risk_level
+        - factors
+        - lat
+        - lng
+        - census_tract
+        - geocoded_address
+        - data_sources
+        - tract_fips
+      properties:
+        address:
+          type: string
+          description: The original queried address
+        geocoded_address:
+          type: string
+          description: The address as returned by the Census Geocoder
+        score:
+          type: integer
+          description: Risk score from 0 (low) to 100 (high)
+          minimum: 0
+          maximum: 100
+        risk_level:
+          type: string
+          description: Human-readable risk level
+          enum: [Low, Moderate, High, Very High]
+        factors:
+          type: array
+          items:
+            $ref: "#/components/schemas/RiskFactor"
+          description: Structured risk factor breakdown with individual scores
+        lat:
+          type: number
+          description: Latitude of the geocoded address
+        lng:
+          type: number
+          description: Longitude of the geocoded address
+        census_tract:
+          type: string
+          description: Census tract FIPS code (GEOID, 11 digits)
+        tract_fips:
+          type: string
+          description: Full 11-digit census tract GEOID
+        data_sources:
+          type: array
+          items:
+            type: string
+          description: List of data sources used in computing the score
+        used_fallback:
+          type: boolean
+          description: True if state-level Census data was used instead of tract-level
+        pct_pre1986:
+          type: integer
+          description: Percentage of housing units built before 1986 in the census tract
+          nullable: true
+        median_income:
+          type: integer
+          description: Median household income for the census tract in dollars
+          nullable: true
+        epa_violations_10yr:
+          type: integer
+          description: Number of EPA lead/copper action level violations in the past 10 years for this state
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          enum: [us, ca]
+
+    CacheStats:
+      type: object
+      required:
+        - census_tracts_cached
+        - epa_data_loaded
+        - epa_total_violations
+        - epa_states_covered
+      properties:
+        census_tracts_cached:
+          type: integer
+          description: Number of census tracts currently cached in memory
+        epa_data_loaded:
+          type: boolean
+          description: Whether EPA violation data was loaded successfully from disk
+        epa_total_violations:
+          type: integer
+          description: Total lead/copper violations loaded from the EPA file
+        epa_states_covered:
+          type: integer
+          description: Number of states with violation data
+        epa_load_error:
+          type: string
+          nullable: true
+          description: Error message if EPA data failed to load
+
+    StatsResult:
+      type: object
+      required:
+        - homes_at_risk
+        - children_affected
+        - datasets_analyzed
+        - addresses_checked
+      properties:
+        homes_at_risk:
+          type: string
+        children_affected:
+          type: string
+        datasets_analyzed:
+          type: integer
+        addresses_checked:
+          type: integer
+
+    Representative:
+      type: object
+      required:
+        - name
+        - title
+        - party
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        party:
+          type: string
+        email:
+          type: string
+          nullable: true
+        url:
+          type: string
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+
+    RepresentativesResult:
+      type: object
+      required:
+        - representatives
+      properties:
+        representatives:
+          type: array
+          items:
+            $ref: "#/components/schemas/Representative"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+
+    NeighborhoodPoint:
+      type: object
+      required:
+        - lat
+        - lng
+        - score
+      properties:
+        lat:
+          type: number
+        lng:
+          type: number
+        score:
+          type: number

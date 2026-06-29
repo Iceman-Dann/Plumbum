@@ -1,0 +1,290 @@
+/* VerifyYourPipe.module.css
+   Strict flat/brutalist design — 0px border-radius, no box-shadows
+   Palette: #f8f6f1 bg, #a63d2f accent, Inter / Playfair typography
+*/
+
+.wrapper {
+  padding: 0;
+}
+
+/* ── Instructions block ── */
+.heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1A1614;
+  margin: 0 0 14px;
+}
+
+.instructions {
+  margin-bottom: 32px;
+}
+
+.body {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4A4540;
+  margin: 0 0 16px;
+  max-width: 680px;
+}
+
+.steps {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #5A5550;
+  line-height: 1.7;
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Drop zone ── */
+.dropZone {
+  width: 100%;
+  min-height: 200px;
+  border: 1px dashed #B8AFA8;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+  position: relative;
+  /* 0px border-radius */
+}
+
+.dropZone:hover,
+.dropZone:focus-visible {
+  border-color: #a63d2f;
+  outline: none;
+}
+
+.dropZoneDragging {
+  border-color: #a63d2f;
+  background: #FDF5F3;
+  border-style: solid;
+}
+
+.dropZoneHasFile {
+  border-style: solid;
+  border-color: #D6CFC8;
+  cursor: default;
+}
+
+.dropZoneInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 24px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.dropIcon {
+  color: #B8AFA8;
+}
+
+.dropText {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4A4540;
+  text-align: center;
+}
+
+.dropSub {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  color: #8E8883;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* ── Preview ── */
+.previewWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  width: 100%;
+}
+
+.previewImg {
+  max-height: 240px;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.previewName {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  color: #8E8883;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+  text-align: center;
+}
+
+/* ── Hidden native input ── */
+.hiddenInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ── Action row ── */
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+/* Brick-red primary upload button */
+.uploadBtn {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #FFFFFF;
+  background: #a63d2f;
+  border: none;
+  padding: 11px 24px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  /* 0px border-radius */
+}
+
+.uploadBtn:hover {
+  background: #8A3026;
+}
+
+/* Submit (confirm) button — charcoal outline */
+.submitBtn {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1A1614;
+  background: transparent;
+  border: 1.5px solid #1A1614;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #1A1614;
+  color: #FFFFFF;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+/* Clear / remove button */
+.clearBtn {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  color: #8E8883;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.clearBtn:hover {
+  color: #1A1614;
+}
+
+/* ── Error ── */
+.errorMsg {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  color: #a63d2f;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* ── Success state ── */
+.successBox {
+  border: 1px solid #D6CFC8;
+  background: #FAFAF8;
+  padding: 36px 32px;
+  text-align: center;
+}
+
+.successIcon {
+  font-size: 28px;
+  color: #4A7C59;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.successTitle {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1614;
+  margin-bottom: 10px;
+}
+
+.successBody {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #5A5550;
+  line-height: 1.65;
+  max-width: 440px;
+  margin: 0 auto 20px;
+}
+
+.resetBtn {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8E8883;
+  background: transparent;
+  border: 1px solid #D6CFC8;
+  padding: 9px 18px;
+  cursor: pointer;
+}
+
+.resetBtn:hover {
+  border-color: #1A1614;
+  color: #1A1614;
+}
+
+/* ── Legal disclaimer ── */
+.disclaimer {
+  font-family: Inter, sans-serif;
+  font-size: 10px;
+  color: #A09890;
+  line-height: 1.6;
+  margin-top: 20px;
+  max-width: 640px;
+}
+
+.disclaimerLink {
+  color: #A09890;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.disclaimerLink:hover {
+  color: #1A1614;
+}

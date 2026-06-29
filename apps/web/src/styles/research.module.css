@@ -1,0 +1,434 @@
+.wrapper {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hero {
+  padding: 100px 0 72px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.portalTag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #C07A2A;
+  background: rgba(192, 122, 42, 0.1);
+  padding: 4px 10px;
+  margin-bottom: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.headline {
+  font-family: var(--font-serif);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+
+.heroBody {
+  font-size: 16px;
+  color: var(--color-gray);
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+/* ── Section styles ── */
+.section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sectionHeader {
+  margin-bottom: 40px;
+  max-width: 800px;
+}
+
+.sectionMeta {
+  font-size: 11px;
+  font-weight: 700;
+  color: #A63D2F;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--color-text);
+}
+
+.sectionDesc {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--color-gray);
+  margin: 0;
+}
+
+/* ── Interactive Map Form ── */
+.searchForm {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+
+.searchInput {
+  flex: 1;
+  height: 48px;
+  border: 1.5px solid var(--color-border);
+  padding: 0 16px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  background: #FFFFFF;
+}
+
+.searchBtn {
+  height: 48px;
+  padding: 0 24px;
+  background: var(--color-text);
+  color: #FFFFFF;
+  border: none;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.searchBtn:hover {
+  opacity: 0.9;
+}
+
+.mapContainer {
+  height: 550px;
+  border: 1.5px solid var(--color-border);
+  overflow: hidden;
+}
+
+.mapPlaceholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  color: var(--color-gray);
+  font-size: 14px;
+}
+
+/* ── Budget Dashboard ── */
+.dashboardLayout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 40px;
+  margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+  .dashboardLayout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.cityList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cityBtn {
+  text-align: left;
+  padding: 20px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cityBtn:hover {
+  background: var(--color-surface);
+  border-color: var(--color-text);
+}
+
+.cityBtnActive {
+  background: #FAF8F5;
+  border-color: #A63D2F;
+  border-left: 4px solid #A63D2F;
+}
+
+.cityName {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-text);
+}
+
+.cityLabel {
+  font-size: 12px;
+  color: var(--color-gray);
+}
+
+.auditPanel {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  padding: 40px;
+}
+
+.auditHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid var(--color-border);
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+
+.auditHeader h3 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.warningPill {
+  font-size: 11px;
+  font-weight: 700;
+  background: #FFF5F5;
+  color: #A63D2F;
+  border: 1px solid #FFAAAA;
+  padding: 4px 10px;
+  text-transform: uppercase;
+}
+
+.metricRow {
+  margin-bottom: 24px;
+}
+
+.metricLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  margin-bottom: 8px;
+}
+
+.metricLabel span {
+  color: var(--color-gray);
+}
+
+.metricLabel strong {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.progressTrack {
+  height: 8px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFillAllocated {
+  height: 100%;
+  background: #1A1614;
+}
+
+.progressFillDisbursed {
+  height: 100%;
+  background: #A63D2F;
+  border-radius: 4px 0 0 4px;
+}
+
+.gapBox {
+  background: var(--color-surface);
+  border-left: 4px solid #A63D2F;
+  padding: 24px;
+  margin: 32px 0;
+}
+
+.gapMetrics {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 16px;
+}
+
+.gapLabel {
+  font-size: 11px;
+  color: var(--color-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.gapValue {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  margin: 4px 0 0 0;
+  color: var(--color-text);
+}
+
+.gapNotice {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-gray);
+  margin: 0;
+}
+
+.contextGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  border-top: 1.5px solid var(--color-border);
+  padding-top: 32px;
+}
+
+.contextCell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contextCell span {
+  font-size: 12px;
+  color: var(--color-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.contextCell strong {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ── Press Pitch Generator ── */
+.pitchLayout {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 40px;
+  margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+  .pitchLayout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.pitchForm {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  height: 44px;
+  border: 1px solid var(--color-border);
+  padding: 0 14px;
+  font-size: 13.5px;
+  background: #FFFFFF;
+}
+
+.generateBtn {
+  height: 48px;
+  background: #A63D2F;
+  color: #FFFFFF;
+  border: none;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.generateBtn:hover {
+  opacity: 0.9;
+}
+
+.pitchOutput {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pitchTextarea {
+  width: 100%;
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  border: 1px solid var(--color-border);
+  padding: 16px;
+  resize: vertical;
+  background: #FAF8F5;
+}
+
+.copyBtn {
+  padding: 12px 24px;
+  background: var(--color-text);
+  color: #FFFFFF;
+  border: none;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.mailtoBtn {
+  padding: 12px 24px;
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.15s ease;
+}
+
+.mailtoBtn:hover {
+  background: var(--color-surface);
+}
+
+/* ── FOIA Stonewall Analyzer ── */
+.foiaWrap {
+  margin-top: 24px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  padding: 16px;
+}

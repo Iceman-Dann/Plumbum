@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plumbum — Lead Pipe Risk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div class="logo">
+        <img src="icons/icon48.png" alt="Logo" class="logo-img" style="width: 18px; height: 18px;" />
+        <span class="logo-text">Plumbum</span>
+      </div>
+      <button class="settings-toggle" id="settingsToggle" title="Settings">⚙</button>
+    </header>
+
+    <!-- Settings panel (hidden by default) -->
+    <div class="settings-panel" id="settingsPanel" hidden>
+      <div class="settings-title">Extension Settings</div>
+      <label class="toggle-row">
+        <span class="toggle-label">Show badge on listings</span>
+        <input type="checkbox" id="badgeEnabled" class="toggle-input" checked />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+      <label class="toggle-row">
+        <span class="toggle-label">Pregnancy Mode</span>
+        <input type="checkbox" id="pregnancyMode" class="toggle-input" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+      <label class="toggle-row">
+        <span class="toggle-label">Language</span>
+        <select id="langSelect" class="lang-select">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- Listing view: shown when on a real estate page -->
+    <div id="listingView" hidden>
+      <div class="address-label" id="addressLabel"></div>
+
+      <div class="score-row" id="scoreRow">
+        <div class="score-num" id="scoreNum">—</div>
+        <div class="score-right">
+          <div class="score-level" id="scoreLevel">—</div>
+          <div class="score-denom">/ 100</div>
+        </div>
+      </div>
+
+      <div id="pregnancyBanner" class="pregnancy-banner" hidden>
+        ⚠ PREGNANCY ALERT — No safe level of lead exists during pregnancy. Take action today.
+      </div>
+
+      <div class="factors-section">
+        <div class="factors-label">RISK FACTORS</div>
+        <div id="factorsList"></div>
+      </div>
+
+      <a id="reportLink" href="#" target="_blank" class="report-btn">
+        View Full Report →
+      </a>
+    </div>
+
+    <!-- Search view: shown when NOT on a real estate page -->
+    <div id="searchView" hidden>
+      <div class="search-headline">Check any address</div>
+      <div class="search-sub">Enter any US address to see its lead pipe risk score.</div>
+      <div class="search-row">
+        <input type="text" id="searchInput" class="search-input" placeholder="123 Main St, Newark, NJ" />
+        <button id="searchBtn" class="search-btn">Check</button>
+      </div>
+      <div id="searchResult" class="search-result" hidden></div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="loadingView" hidden>
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Checking lead risk…</div>
+    </div>
+
+    <!-- Error state -->
+    <div id="errorView" hidden>
+      <div class="error-icon">⚠</div>
+      <div class="error-text" id="errorText">Unable to retrieve risk data.</div>
+    </div>
+
+    <footer class="popup-footer">
+      <a href="https://plumbum.io" target="_blank">plumbum.io</a>
+      ·
+      <a href="https://plumbum.io/methodology" target="_blank">Methodology</a>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "Plumbum — Lead Pipe Risk",
+  "version": "1.1.0",
+  "description": "Automatically shows lead pipe risk scores on Zillow, Redfin, Trulia, and Realtor.com. Injects a brutalist risk card directly below the listing price. Built on EPA and US Census data. Free and open source.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": [
+    "*://*.zillow.com/*",
+    "*://*.redfin.com/*",
+    "*://*.trulia.com/*",
+    "*://*.realtor.com/*",
+    "*://*.apartments.com/*",
+    "https://plumbum.io/*",
+    "http://localhost:8080/*",
+    "http://127.0.0.1:8080/*",
+    "http://localhost:5173/*",
+    "http://127.0.0.1:5173/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.zillow.com/*",
+        "*://*.redfin.com/*",
+        "*://*.trulia.com/*",
+        "*://*.realtor.com/*",
+        "*://*.apartments.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*.png"],
+      "matches": [
+        "*://*.zillow.com/*",
+        "*://*.redfin.com/*",
+        "*://*.trulia.com/*",
+        "*://*.realtor.com/*",
+        "*://*.apartments.com/*"
+      ]
+    }
+  ]
+}

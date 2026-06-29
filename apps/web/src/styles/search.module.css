@@ -1,0 +1,475 @@
+.searchWrapper {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.searchForm {
+  display: flex;
+  height: 64px;
+  border: 2px solid var(--color-text);
+  background: #FFFFFF;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.searchForm:focus-within {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.searchForm.loading {
+  border-color: var(--color-accent);
+}
+
+.input {
+  flex: 1;
+  border: none;
+  padding: 0 24px;
+  font-size: 17px;
+  outline: none;
+  background: transparent;
+}
+
+.button {
+  background: #C8102E;
+  color: #FFFFFF;
+  border: none;
+  padding: 0 36px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 0;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: background 0.15s ease;
+}
+
+.button:hover:not(:disabled) {
+  background: #B00F28;
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.noAccount {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--color-gray);
+  text-align: center;
+}
+
+.loadingWrapper {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.terminalLoader {
+  margin-top: 16px;
+  background-color: #EDEAE3;
+  border: 1.5px solid #6B6B63;
+  padding: 16px;
+  text-align: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #3D3D38;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  animation: terminalBlink 1s step-end infinite;
+}
+
+@keyframes terminalBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loadingText {
+  font-size: 14px;
+  color: var(--color-accent);
+  margin-bottom: 8px;
+}
+
+
+.progressContainer {
+  height: 1px;
+  background: var(--color-border);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--color-accent);
+  width: 50%;
+  animation: sweep 1s infinite linear;
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.resultWrapper {
+  margin-top: 32px;
+  animation: slideDown 400ms ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Real estate URL input ── */
+
+.orDivider {
+  position: relative;
+  margin: 24px 0 20px;
+  text-align: center;
+}
+
+.orDivider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-border);
+  transform: translateY(-50%);
+}
+
+.orText {
+  position: relative;
+  display: inline-block;
+  background: var(--color-bg);
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--color-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.urlForm {
+  display: flex;
+  height: 42px;
+  gap: 0;
+  border: 1px dashed var(--color-border);
+  background: rgba(237, 234, 227, 0.2);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.urlForm:focus-within {
+  border-color: var(--color-gray);
+  background: #FFFFFF;
+}
+
+.urlInput {
+  flex: 1;
+  border: none;
+  padding: 0 14px;
+  font-size: 13px;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+}
+
+.urlInput::placeholder {
+  color: #A0A09A;
+}
+
+.urlButton {
+  background: transparent;
+  color: var(--color-gray);
+  border: none;
+  border-left: 1px solid var(--color-border);
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.urlButton:hover:not(:disabled) {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.urlButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.urlError {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--color-accent);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .searchForm {
+    flex-direction: column;
+    height: auto;
+  }
+  .input {
+    height: 56px;
+    border-bottom: 1.5px solid var(--color-border);
+  }
+  .button {
+    height: 56px;
+  }
+  .urlForm {
+    flex-direction: column;
+    height: auto;
+  }
+  .urlInput {
+    height: 48px;
+    border-bottom: 1.5px solid #6B6B63;
+  }
+  .urlButton {
+    height: 48px;
+    border-left: none;
+    border-top: 1.5px solid #6B6B63;
+  }
+}
+
+/* Smart Search Bar Styles */
+
+.locationButton {
+  background: transparent;
+  border: none;
+  color: var(--color-gray);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  transition: color 0.15s ease;
+}
+
+.locationButton:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
+.locationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dropdown {
+  position: absolute;
+  top: 58px;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e0ddd6;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dropdownItem {
+  padding: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.dropdownItem:hover {
+  background-color: #edeae3;
+}
+
+.historyDropdown {
+  display: flex;
+  flex-direction: column;
+}
+
+.historyLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-gray);
+  padding: 10px 12px 6px;
+  border-bottom: 1px solid #e0ddd6;
+}
+
+.clearHistoryRow {
+  padding: 8px 12px;
+  border-top: 1px solid #e0ddd6;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.clearBtn {
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--color-accent);
+  cursor: pointer;
+  padding: 0;
+}
+
+.clearBtn:hover {
+  text-decoration: underline;
+}
+
+.locatingText {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--color-gray);
+  margin-top: 8px;
+  text-align: left;
+}
+
+/* Small Search Bar Variation */
+.searchForm.small {
+  height: 48px;
+}
+.searchForm.small .input {
+  padding: 0 16px;
+  font-size: 14px;
+}
+.searchForm.small .button {
+  padding: 0 20px;
+  font-size: 13px;
+}
+.searchCard.small {
+  padding: 24px;
+}
+
+.searchCard {
+  background-color: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  padding: 36px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: left;
+  position: relative;
+}
+
+.impartialityBadge {
+  margin-top: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 10px 16px;
+  text-align: center;
+  border-radius: var(--radius);
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .searchCard {
+    padding: 20px;
+  }
+}
+
+/* Pregnancy Mode Toggle Styles */
+.pregnancyToggleContainer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.pregnancyToggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pregnancyCheckbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--color-text);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.pregnancyCheckbox:checked {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.pregnancyCheckbox:checked::before {
+  content: "✓";
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.pregnancyToggleText {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.01em;
+}
+
+/* Extension Promo Link Styles */
+.extensionPromo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  margin-top: 20px;
+  font-family: var(--font-sans);
+}
+
+.extensionPromoText {
+  font-size: 13px;
+  color: var(--color-gray);
+  font-weight: 500;
+}
+
+.extensionPromoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+  transition: background 0.15s ease, border-color 0.15s ease;
+  text-decoration: none !important;
+}
+
+.extensionPromoLink:hover {
+  background-color: var(--color-border);
+  border-color: var(--color-gray);
+}
+
+.chromeIcon {
+  flex-shrink: 0;
+  color: var(--color-text);
+}
