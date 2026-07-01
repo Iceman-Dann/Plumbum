@@ -25,16 +25,15 @@
 
 <br/>
 
-<a href="#-what-it-does">What It Does</a> •
-<a href="#-the-problem-it-solves">The Problem</a> •
-<a href="#-how-it-works">How It Works</a> •
-<a href="#-architecture">Architecture</a> •
-<a href="#-tech-stack">Tech Stack</a> •
-<a href="#-getting-started">Getting Started</a> •
-<a href="#-environment-variables">Env Setup</a> •
-<a href="#-api">API</a> •
-<a href="#-browser-extension">Extension</a> •
-<a href="#-contributing">Contributing</a>
+<a href="#what-it-does">What It Does</a> •
+<a href="#the-problem-it-solves">The Problem</a> •
+<a href="#how-it-works">How It Works</a> •
+<a href="#architecture">Architecture</a> •
+<a href="#tech-stack">Tech Stack</a> •
+<a href="#getting-started">Getting Started</a> •
+<a href="#api">API</a> •
+<a href="#browser-extension">Extension</a> •
+<a href="#contributing">Contributing</a>
 
 </div>
 
@@ -44,115 +43,141 @@
 <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.gif" width="100%" height="6px"/>
 </div>
 
-## 💧 What It Does
+<br/>
+
+> **In one sentence:** type in any US address, and Plumbum tells you — in plain English, for free, with no account needed — whether the water coming out of that home's tap is likely to contain lead.
+
+<br/>
+
+## <img src="https://api.iconify.design/ph:drop-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> What It Does
 
 **Plumbum** is a free, open-source public health tool that tells anyone in the US whether their home's drinking water is at risk from lead contamination — in under 3 seconds, with zero sign-up required.
 
 You type an address. Plumbum pulls from **EPA enforcement records, US Census housing data, HUD redlining maps, and USGS geological surveys** to compute a personalized lead risk score. You get:
 
-- 📊 A **composite lead risk score** (0–100) with a clear risk tier: Low / Moderate / Elevated / High
-- 🗺️ An **interactive pipe-material heatmap** for your neighborhood and nearby schools
-- 📄 An **AI-translated Consumer Confidence Report** — your utility's annual water report, in plain English (and Spanish)
-- ✉️ **Ready-to-send advocacy documents** — FOIA requests, landlord notices, pediatrician letters, and free-filter demand letters, auto-filled with your address and risk data
-- 🏠 A **browser extension** that injects your risk score directly onto Zillow and Redfin property listings while you browse
+<table>
+<tr>
+<td width="32" align="center"><img src="https://api.iconify.design/ph:gauge-fill.svg?color=%23C1442D" width="22"/></td>
+<td>A <strong>composite lead risk score</strong> (0–100) with a clear risk tier: Low / Moderate / Elevated / High</td>
+</tr>
+<tr>
+<td align="center"><img src="https://api.iconify.design/ph:map-trifold-fill.svg?color=%23C1442D" width="22"/></td>
+<td>An <strong>interactive pipe-material heatmap</strong> for your neighborhood and nearby schools</td>
+</tr>
+<tr>
+<td align="center"><img src="https://api.iconify.design/ph:file-text-fill.svg?color=%23C1442D" width="22"/></td>
+<td>An <strong>AI-translated Consumer Confidence Report</strong> — your utility's annual water report, in plain English (and Spanish)</td>
+</tr>
+<tr>
+<td align="center"><img src="https://api.iconify.design/ph:envelope-simple-fill.svg?color=%23C1442D" width="22"/></td>
+<td><strong>Ready-to-send advocacy documents</strong> — FOIA requests, landlord notices, pediatrician letters, and free-filter demand letters, auto-filled with your address and risk data</td>
+</tr>
+<tr>
+<td align="center"><img src="https://api.iconify.design/ph:puzzle-piece-fill.svg?color=%23C1442D" width="22"/></td>
+<td>A <strong>browser extension</strong> that shows your risk score directly on Zillow and Redfin listings while you browse</td>
+</tr>
+</table>
 
 <br/>
 
-## 🔴 The Problem It Solves
+## <img src="https://api.iconify.design/ph:warning-fill.svg?color=%238B3A2A" width="24" height="24" valign="middle"/> The Problem It Solves
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-### The Reality of Lead in US Water
-- An estimated **9+ million** US households are still served by lead service lines
-- The EPA's Lead and Copper Rule requires utilities to report violations — but buries them in **dense, jargon-heavy PDFs** called Consumer Confidence Reports (CCRs)
-- Most people never read their CCR. Most renters never receive one.
-- Homebuyers and renters have almost **no practical way to check lead risk before signing a lease or closing a sale**
-- Existing tools are either **paywalled**, ad-choked, or simply don't cover most US cities
+### The reality of lead in US water
+- An estimated **9+ million** US households are still served by lead pipes
+- Utilities are legally required to disclose water quality — but bury it in a dense annual PDF almost nobody reads, called a Consumer Confidence Report (CCR)
+- Most renters never even receive their building's CCR
+- Homebuyers and renters have almost **no practical way to check lead risk** before signing a lease or closing on a house
+- Existing tools are paywalled, ad-choked, or simply don't cover most US cities
 
 </td>
 <td width="50%" valign="top">
 
-### What Was Missing
-- A single, free tool that answers: *"Is my tap water safe from lead?"*
+### What was missing
+- A single, free tool that just answers: *"Is my tap water safe from lead?"*
 - Something that **works for renters**, not just homeowners
-- A resource available in **Spanish** for non-English speaking families
+- Support in **Spanish**, for families who are underserved by English-only tools
 - A way to **hold landlords accountable** when they ignore water quality concerns
-- A tool that helps **journalists and researchers** investigate systemic patterns of lead exposure
+- A resource **journalists and researchers** can use to investigate patterns of lead exposure
 
 </td>
 </tr>
 </table>
 
-### How Plumbum Fixes It
+### How Plumbum fixes it
 
-| ❌ Before Plumbum | ✅ With Plumbum |
+| Before Plumbum | With Plumbum |
 |---|---|
-| CCR buried in a utility PDF, written in legalese | Plain-English (and Spanish) AI summary of your utility's report |
+| CCR buried in a utility PDF, written in legal and technical jargon | Plain-English (and Spanish) AI summary of your utility's report |
 | No way to check risk before renting or buying | Instant risk score for any US address — no sign-up |
-| Zillow/Redfin show square footage but not lead risk | Browser extension injects a risk badge on every listing you browse |
-| Lead violations require a lawyer or FOIA expert | One-click FOIA request auto-filled with your address and risk data |
+| Zillow/Redfin show square footage but not lead risk | Browser extension shows a risk badge on every listing you browse |
+| Filing a lead complaint usually requires a lawyer | One-click FOIA request, auto-filled with your address and risk data |
 | No neighborhood-level data for schools | Interactive map of lead risk at nearby schools and daycares |
-| Renters have no leverage with landlords | Generates a formal landlord notice with community compliance tracking |
+| Renters have no leverage with landlords | Generates a formal landlord notice, with public compliance tracking |
 
 <br/>
 
-## ⚙️ How It Works
+## <img src="https://api.iconify.design/ph:gear-six-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> How It Works
 
-### The Risk Score Engine
+### The risk score engine
 
-Plumbum's scoring model is a **Gradient Boosted Machine (GBM)** trained on multiple public datasets, weighted roughly as follows:
+Plumbum's scoring model is a **Gradient Boosted Machine (GBM)** trained on public data, weighted roughly like this:
 
-- **Pipe material era** (pre/post the 1986 lead ban) — the single strongest signal
-- **Home build year & housing stock age**
-- **Utility violation history** (EPA SDWIS)
-- **Neighborhood redlining correlation** (HUD)
+| Signal | Weight | Why it matters |
+|---|---|---|
+| Pipe material era | Highest | Homes built before the 1986 federal lead ban are far more likely to have lead service lines |
+| Home build year & housing stock age | High | Older housing stock correlates strongly with lead plumbing and fixtures |
+| Utility violation history (EPA SDWIS) | Medium | A history of lead/copper rule violations signals ongoing risk in the water system |
+| Neighborhood redlining correlation (HUD) | Lower | Historically redlined areas were systematically denied infrastructure investment, including pipe replacement |
 
 When you search an address, the server:
 
 1. **Geocodes** the address using Census TIGER/Line data
-2. **Fetches Census tract** demographics and housing vintage (build year distribution)
+2. **Fetches Census tract** demographics and housing vintage
 3. **Cross-references EPA SDWIS** for utility violation history and enforcement actions
 4. **Pulls HUD HOLC redlining grades** to surface historical infrastructure disinvestment
-5. **Queries USGS** for regional geological corrosivity (naturally soft/acidic water accelerates lead leaching)
-6. Combines all signals into a **composite 0–100 risk score** in real time
+5. **Queries USGS** for regional water corrosivity (naturally soft or acidic water leaches lead faster)
+6. Combines every signal into a single **0–100 risk score**, returned in real time
 
-Full methodology and exact weighting live at **`/methodology`**.
+The full breakdown lives at **`/methodology`**.
 
-### The CCR Translation Pipeline
+### The CCR translation pipeline
 
-Your utility publishes an annual **Consumer Confidence Report** (CCR) — a legally-required document that is almost unreadable. Plumbum:
-1. Fetches the CCR PDF URL from EPA's public registry
-2. Extracts key violation data and lead/copper test results
-3. Sends structured data to **Llama 3.3 70B via Groq** for plain-language summarization
-4. Returns an EN/ES bilingual summary alongside your risk score
+Your utility publishes an annual **Consumer Confidence Report (CCR)** — a legally required document that is almost unreadable to a normal person. Plumbum:
 
-### The Accountability Registry
+1. Fetches the CCR PDF from EPA's public registry
+2. Extracts the violation data and lead/copper test results
+3. Sends it to **Llama 3.3 70B via Groq** for plain-language summarization
+4. Returns a bilingual (EN/ES) summary next to your risk score
 
-When a tenant sends a landlord notice through Plumbum, it is stored (anonymously) in a **Supabase-backed crowdsource database**. The community can:
+### The accountability registry
+
+When a tenant sends a landlord notice through Plumbum, it's logged anonymously in a **Supabase-backed community database**. From there, anyone can:
 - See which landlords have **refused** to test or remediate
-- Track properties with **positive lead test results**
-- Submit their own DIY water test results (lead ppb) to enrich the public dataset
+- Track properties with **confirmed positive** lead tests
+- Submit their own DIY water test result to grow the public dataset
 
 <br/>
 
-## 🗺️ Architecture
+## <img src="https://api.iconify.design/ph:tree-structure-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Architecture
 
 ```mermaid
 flowchart LR
-    subgraph Client["🌐 apps/web — React + Vite"]
+    subgraph Client["apps/web — React + Vite"]
         A[Search Bar] --> B[Result Page]
         B --> C[PDF Report Generator]
         B --> D["Letter Generators<br/>FOIA · Landlord · Pediatrician · Filter"]
         B --> E["Interactive Maps<br/>Leaflet: city / schools / hotspots"]
     end
 
-    subgraph Ext["🧩 extension/ — Browser Extension"]
+    subgraph Ext["extension/ — Browser Extension"]
         F[Zillow / Redfin Badge Injection] --> B
     end
 
-    subgraph Server["⚙️ apps/server — API"]
+    subgraph Server["apps/server — API"]
         G["/api/risk"] --> H[GBM Scoring Model]
         I["/api/accountability"] --> J[(Crowdsourced Registry)]
         K["/api/ccr"] --> L[Groq LLM Translation]
@@ -160,7 +185,7 @@ flowchart LR
         O["/api/real-estate"] --> P[Listing Risk Lookup]
     end
 
-    subgraph Data["📦 External Open Data"]
+    subgraph Data["External Open Data"]
         Q[(EPA SDWIS)]
         R[(Census TIGER)]
         S[(HUD HOLC)]
@@ -184,7 +209,7 @@ flowchart LR
 
 <br/>
 
-## 🧭 Site Map
+## <img src="https://api.iconify.design/ph:map-pin-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Site Map
 
 | Route | Purpose |
 |---|---|
@@ -197,37 +222,37 @@ flowchart LR
 | `/city/:slug` | Neighborhood-level deep dive for a specific city |
 | `/research` | Journalist tools — budget tracker, redlining correlation, FOIA & press-pitch generators |
 | `/methodology` | Full explainer of how the GBM scoring model works |
-| `/api-docs` | Live interactive API explorer (no Postman needed) |
+| `/api-docs` | Live interactive API explorer |
 | `/extension` | Browser extension install guide & developer docs |
 | `/data` | Open dataset of anonymized, crowdsourced water test results |
 
 <br/>
 
-## ⚡ Key Capabilities
+## <img src="https://api.iconify.design/ph:lightning-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Key Capabilities
 
 <div align="center">
 
-| 🎯 Feature | Description |
+| Feature | Description |
 |:---:|---|
-| **Live Risk Scoring** | GBM model scores any US address in real time against 4 open data sources |
-| **AI CCR Translation** | Llama 3.3 70B summarizes your utility's PDF water report into plain English/Spanish |
-| **PDF Reports** | Branded, bilingual `jsPDF` reports, one click to download |
-| **Document Generators** | FOIA request, landlord notice, pediatrician letter, free-filter demand |
-| **Pregnancy Mode** | Elevated warnings surfaced site-wide when toggled — lower safe thresholds applied |
-| **Crowdsource DB** | Community-submitted pipe material & DIY water test verification |
-| **Landlord Registry** | Anonymous compliance tracking — refused, pending, tested positive/negative |
-| **Browser Extension** | Injects risk badges directly onto Zillow / Redfin listings while you browse |
-| **Schools Map** | Nearby schools and daycares scored and pinned on an interactive Leaflet map |
-| **Hotspot Leaderboard** | Real-time ranking of cities by search activity and average risk |
-| **Representative Lookup** | Finds your local, state, and federal reps to contact about water issues |
-| **Alert Subscriptions** | Email alerts when your utility issues a new lead violation (via SendGrid) |
-| **EN / ES Bilingual** | Full parity across every page and generated document |
+| **Live risk scoring** | GBM model scores any US address in real time against 4 open data sources |
+| **AI CCR translation** | Llama 3.3 70B summarizes your utility's PDF water report into plain English/Spanish |
+| **PDF reports** | Branded, bilingual `jsPDF` reports, one click to download |
+| **Document generators** | FOIA request, landlord notice, pediatrician letter, free-filter demand |
+| **Pregnancy mode** | Elevated warnings surfaced site-wide when toggled — lower safe thresholds applied |
+| **Crowdsource database** | Community-submitted pipe material & DIY water test verification |
+| **Landlord registry** | Anonymous compliance tracking — refused, pending, tested positive/negative |
+| **Browser extension** | Shows risk badges directly on Zillow / Redfin listings while you browse |
+| **Schools map** | Nearby schools and daycares scored and pinned on an interactive map |
+| **Hotspot leaderboard** | Real-time ranking of cities by search activity and average risk |
+| **Representative lookup** | Finds your local, state, and federal reps to contact about water issues |
+| **Alert subscriptions** | Email alerts when your utility issues a new lead violation |
+| **EN / ES bilingual** | Full parity across every page and generated document |
 
 </div>
 
 <br/>
 
-## 🛠️ Tech Stack
+## <img src="https://api.iconify.design/ph:stack-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Tech Stack
 
 <div align="center">
 
@@ -249,7 +274,7 @@ Alerts     → SendGrid email subscriptions
 
 <br/>
 
-## 📁 Monorepo Structure
+## <img src="https://api.iconify.design/ph:folder-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Monorepo Structure
 
 ```text
 Plumbum/
@@ -270,7 +295,7 @@ Plumbum/
 │   ├── popup.html/js/css     # Extension popup UI
 │   ├── background.js         # Service worker
 │   └── manifest.json
-├── packages/                 # Shared workspace packages (api-client-react, etc.)
+├── packages/                 # Shared workspace packages
 ├── data/                     # Static server-side reference data
 ├── lib/                      # Shared library code across workspace
 ├── scripts/                  # Build & deploy utilities
@@ -280,7 +305,7 @@ Plumbum/
 
 <br/>
 
-## 🚀 Getting Started
+## <img src="https://api.iconify.design/ph:rocket-launch-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Getting Started
 
 ### Prerequisites
 
@@ -290,36 +315,32 @@ Plumbum/
 | [pnpm](https://pnpm.io/) | ≥ 8 | Package manager & workspace orchestration |
 | [Supabase account](https://supabase.com/) | — | Postgres database (free tier works) |
 
-Install pnpm if you don't have it:
 ```bash
 npm install -g pnpm
 ```
 
-### 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/plumbum.git
 cd plumbum
 ```
 
-### 2. Install Dependencies
+### 2. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-This installs dependencies for **all workspaces** (`apps/web`, `apps/server`, `packages/`) in one command.
+This installs dependencies for **every workspace** (`apps/web`, `apps/server`, `packages/`) in one command.
 
-### 3. Configure Environment Variables
+### 3. Configure environment variables
 
-Create a `.env` file at the **project root** (copy the template below):
+Create a `.env` file at the **project root**:
 
 ```env
 # ── Supabase (Required) ─────────────────────────────────────────────────
-# Option A: Direct Postgres connection (recommended)
 DATABASE_URL="postgresql://postgres.[your-project-ref]:[your-password]@aws-0-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require"
-
-# Option B: Supabase JS client
 SUPABASE_URL="https://your-project-ref.supabase.co"
 SUPABASE_KEY="your-anon-or-service-role-key"
 
@@ -351,49 +372,43 @@ ENCRYPTION_KEY="your-32-byte-hex-key"
 | Google Places | [console.cloud.google.com](https://console.cloud.google.com) | $200 free credit/month |
 | Google Civic | [console.cloud.google.com](https://console.cloud.google.com) | Free, no billing required |
 
-### 4. Set Up the Database
+### 4. Set up the database
 
-Open your [Supabase SQL Editor](https://app.supabase.com) and run the schema from [`supabase_setup.md`](./supabase_setup.md). This creates:
-- `test_results` — community-submitted DIY water test data (lead ppb per Census tract)
-- `landlord_notices` — crowdsourced landlord compliance registry with response tracking
+Run the schema from [`supabase_setup.md`](./supabase_setup.md) in your [Supabase SQL Editor](https://app.supabase.com). This creates:
+- `test_results` — community-submitted DIY water test data
+- `landlord_notices` — crowdsourced landlord compliance registry
 
-### 5. Run the Development Servers
+### 5. Run the dev servers
 
-Open **two terminals** and run each from the project root:
-
-**Terminal 1 — Frontend (React + Vite, port 5173):**
+**Terminal 1 — Frontend (port 5173):**
 ```bash
 pnpm dev:web
 ```
 
-**Terminal 2 — Backend (API Server, port 8080):**
+**Terminal 2 — Backend (port 8080):**
 ```bash
 pnpm dev:server
 ```
 
-> The frontend proxies API requests to `localhost:8080` automatically via Vite's dev server config. Open **http://localhost:5173** in your browser.
+> The frontend proxies API requests to `localhost:8080` automatically. Open **http://localhost:5173**.
 
-### 6. Install the Browser Extension (Optional)
-
-To use the Zillow/Redfin badge injection in development:
+### 6. Install the browser extension (optional)
 
 1. Open Chrome → `chrome://extensions/`
-2. Enable **Developer mode** (top-right toggle)
-3. Click **Load unpacked** → select the `extension/` folder from this repo
-4. Navigate to any Zillow or Redfin listing — you'll see a Plumbum risk badge appear on each property card
+2. Enable **Developer mode**
+3. Click **Load unpacked** → select the `extension/` folder
+4. Visit any Zillow or Redfin listing — a Plumbum risk badge appears on the property card
 
 <br/>
 
-## 🔌 API
+## <img src="https://api.iconify.design/ph:plug-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> API
 
-The server exposes a REST API on port `8080`. Full interactive docs are available at **`/api-docs`** once the server is running.
+The server exposes a REST API on port `8080`. Full interactive docs live at **`/api-docs`** once the server is running.
 
-### `GET /api/risk` — Lead Risk Score
-
+**`GET /api/risk`** — lead risk score for an address
 ```bash
 GET /api/risk?address=123+Main+St,+Chicago,+IL
 ```
-
 ```json
 {
   "score": 72,
@@ -410,75 +425,43 @@ GET /api/risk?address=123+Main+St,+Chicago,+IL
 }
 ```
 
-### `GET /api/ccr` — Consumer Confidence Report (AI Translation)
-
-```bash
-GET /api/ccr?address=123+Main+St,+Chicago,+IL&lang=en
-```
-
-Returns a plain-language AI summary of the utility's annual water quality report.
-
-### `GET /api/schools` — Nearby School Lead Risk
-
-```bash
-GET /api/schools?lat=41.8827&lng=-87.6233&radius=3000
-```
-
-Returns nearby schools and daycares with individual risk scores and map pins.
-
-### `GET /api/hotspots` — City Risk Leaderboard
-
-```bash
-GET /api/hotspots
-```
-
-Returns cities ranked by search volume and average risk score.
-
-### `POST /api/accountability` — Submit Landlord Notice
-
-```bash
-POST /api/accountability
-Content-Type: application/json
-
-{
-  "propertyAddress": "123 Main St, Chicago, IL",
-  "riskScore": 72,
-  "landlordName": "John Smith",
-  "landlordResponse": "PENDING"
-}
-```
-
-### `GET /api/real-estate` — Real-Estate Listing Risk (Extension)
-
-```bash
-GET /api/real-estate?url=https://www.zillow.com/homedetails/...
-```
-
-Used by the browser extension to score a listing URL directly.
-
-### `GET /api/representatives` — Find Your Representatives
-
-```bash
-GET /api/representatives?address=123+Main+St,+Chicago,+IL
-```
-
-Returns local, state, and federal representatives with contact information.
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/ccr` | Plain-language AI translation of a utility's CCR |
+| `GET /api/schools` | Nearby schools/daycares with individual risk scores |
+| `GET /api/hotspots` | City leaderboard by search volume & average risk |
+| `POST /api/accountability` | Submit a landlord compliance notice |
+| `GET /api/real-estate` | Score a listing URL directly (used by the extension) |
+| `GET /api/representatives` | Local, state, and federal reps for an address |
 
 <br/>
 
-## 🧩 Browser Extension
+## <img src="https://api.iconify.design/ph:puzzle-piece-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Browser Extension
 
-The Plumbum extension injects a **color-coded lead risk badge** on every property card you browse on Zillow and Redfin.
+The Plumbum extension shows a **color-coded lead risk badge** on every property card you browse on Zillow and Redfin.
 
-### What it does
+<div align="center">
+  <img src="apps/web/public/extension-screenshot.png" alt="Plumbum browser extension risk badge on a Zillow listing" width="800" style="max-width:100%;border-radius:12px;" />
+</div>
+
+<br/>
+
+**What it does**
 - Detects Zillow and Redfin listing pages automatically
-- Extracts the property address from the listing DOM
+- Extracts the property address from the page
 - Calls `/api/real-estate` to fetch a risk score in the background
-- Injects a badge (🟢 Low / 🟡 Moderate / 🟠 Elevated / 🔴 High) directly onto the listing card
-- Clicking the badge opens a full Plumbum result report for that address
+- Shows a badge directly on the listing:
 
-### Extension structure
+<p align="center">
+<img src="https://api.iconify.design/ph:circle-fill.svg?color=%23639922" width="14"/> Low &nbsp;&nbsp;
+<img src="https://api.iconify.design/ph:circle-fill.svg?color=%23BA7517" width="14"/> Moderate &nbsp;&nbsp;
+<img src="https://api.iconify.design/ph:circle-fill.svg?color=%23D85A30" width="14"/> Elevated &nbsp;&nbsp;
+<img src="https://api.iconify.design/ph:circle-fill.svg?color=%23A32D2D" width="14"/> High
+</p>
 
+- Clicking the badge opens the full Plumbum report for that address
+
+**Extension structure**
 ```
 extension/
 ├── manifest.json       # Manifest V3 — permissions: zillow.com, redfin.com
@@ -490,36 +473,33 @@ extension/
 
 <br/>
 
-## 🏗️ Building for Production
+## <img src="https://api.iconify.design/ph:hammer-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Building For Production
 
 ```bash
-# Type-check all packages, then build everything
 pnpm build
 ```
 
-This runs `tsc --build` across the workspace and builds the Vite frontend bundle. The output goes to `apps/web/dist/` — deploy it to any static host (Vercel, Netlify, Cloudflare Pages). The API server can be deployed to any Node.js host (Railway, Render, Fly.io).
+Type-checks every package, then builds the Vite frontend bundle to `apps/web/dist/` — deployable to any static host (Vercel, Netlify, Cloudflare Pages). The API server runs on any Node.js host (Railway, Render, Fly.io).
 
 <br/>
 
-## 🤝 Contributing
+## <img src="https://api.iconify.design/ph:users-three-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> Contributing
 
-Pull requests are welcome — especially around:
-- 📊 **Dataset coverage** — more states, utilities, and USGS data points
-- 🌐 **Translation accuracy** — EN/ES and future languages
-- ♿ **Accessibility** — WCAG 2.1 AA compliance
-- 🧪 **Testing** — unit and integration tests for the scoring model
+Pull requests are welcome, especially around:
+- **Dataset coverage** — more states, utilities, and USGS data points
+- **Translation accuracy** — EN/ES and future languages
+- **Accessibility** — WCAG 2.1 AA compliance
+- **Testing** — unit and integration tests for the scoring model
 
 ```bash
-# Fork the repo, then:
 git checkout -b feature/your-idea
 git commit -m "add: your idea"
 git push origin feature/your-idea
-# Open a pull request on GitHub
 ```
 
 <br/>
 
-## 📄 License
+## <img src="https://api.iconify.design/ph:scroll-fill.svg?color=%23C1442D" width="24" height="24" valign="middle"/> License
 
 MIT — free for everyone, forever.
 
@@ -527,7 +507,7 @@ MIT — free for everyone, forever.
 
 <div align="center">
 
-### 💧 Built so every family can check their tap.
+### Built so every family can check their tap.
 
 *9 million US households. One search box. Zero dollars.*
 
