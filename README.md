@@ -353,7 +353,7 @@ CENSUS_API_KEY="your-census-api-key"
 
 # ── SendGrid (Optional — for alert email subscriptions) ──────────────────
 SENDGRID_API_KEY=""
-SENDGRID_FROM_EMAIL="contact@plumbum.io"
+SENDGRID_FROM_EMAIL="contact@plumbummap.org"
 
 # ── Encryption (for subscriber tokens) ───────────────────────────────────
 ENCRYPTION_KEY="your-32-byte-hex-key"
@@ -487,6 +487,11 @@ Returns local, state, and federal representatives with contact information.
 ## 🧩 Browser Extension
 
 The Plumbum extension injects a **color-coded lead risk badge** on every property card you browse on Zillow and Redfin.
+
+<div align="center">
+  <img src="apps/web/public/extension-screenshot.png" alt="Plumbum browser extension risk badge on a Zillow listing" width="800" style="max-width:100%;border:1px solid #ddd;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.12);" />
+  <p style="font-size:0.95rem;color:#555;margin-top:12px;">Example screenshot of the Plumbum extension displaying a lead risk badge directly on a real-estate listing card.</p>
+</div>
 
 ### What it does
 - Detects Zillow and Redfin listing pages automatically
