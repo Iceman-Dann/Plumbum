@@ -1,0 +1,18 @@
+{
+  "short_name": "Plumbum",
+  "name": "Plumbum Lead Water Risk Map",
+  "description": "Anonymously assess tap water lead piping risk from Census and EPA records.",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#F8F6F1",
+  "theme_color": "#A63D2F",
+  "display": "standalone",
+  "orientation": "portrait"
+}

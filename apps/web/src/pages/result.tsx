@@ -10,6 +10,7 @@ import { generateReport, type RiskData } from "../lib/generateReport";
 import FoiaLetter from "../components/FoiaLetter";
 import PediatricianLetter from "../components/PediatricianLetter";
 import LandlordLetter from "../components/LandlordLetter";
+import SchoolDistrictLetter from "../components/SchoolDistrictLetter";
 import FreeFilterDemand from "../components/FreeFilterDemand";
 import RepresentativeSection from "../components/RepresentativeSection";
 import WaterTestForm from "../components/WaterTestForm";
@@ -18,6 +19,7 @@ import AlertSubscription from "../components/AlertSubscription";
 import { usePregnancyMode } from "@/hooks/usePregnancyMode";
 import SearchBar from "../components/SearchBar";
 import html2canvas from "html2canvas";
+import { AlertTriangle, CheckCircle, Info, Check } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 const LeafletMap = React.lazy(() => import("@/components/map/leaflet-map"));
@@ -93,42 +95,57 @@ const severityColors: Record<Severity, string> = {
 function AlertBanner({ score, t, isPregnant }: { score: number; t: Translations; isPregnant: boolean }) {
   if (isPregnant) {
     return (
-      <div className={styles.alertBanner} style={{ background: "#5C1A1A" }}>
-        <span>PREGNANCY ALERT — Lead exposure during pregnancy can cause miscarriage, premature birth, and permanent harm to fetal brain development. The CDC states there is no safe level of lead in blood during pregnancy. Take action today.</span>
+      <div className={styles.alertBanner} style={{ background: "#4A1D24" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+          <AlertTriangle size={16} style={{ color: "#F59E0B", flexShrink: 0 }} />
+          <span>PREGNANCY ALERT — Lead exposure during pregnancy can cause miscarriage, premature birth, and permanent harm to fetal brain development. The CDC states there is no safe level of lead in blood during pregnancy. Take action today.</span>
+        </span>
       </div>
     );
   }
 
   const link = (
-    <a href="https://www.epa.gov/ground-water-and-drinking-water/get-your-water-tested" target="_blank" rel="noreferrer" className={styles.alertLink}>
+    <a href="https://www.epa.gov/sites/default/files/2015-11/documents/2005_09_14_faq_fs_homewatertesting.pdf" target="_blank" rel="noreferrer" className={styles.alertLink}>
       {score >= 40 && score < 60 ? t.result.learnMore : t.result.getFreeTestKit}
     </a>
   );
 
   if (score >= 80) {
     return (
-      <div className={styles.alertBanner} style={{ background: "#7A1F0F" }}>
-        <span>{t.result.alertVeryHigh} {link}</span>
+      <div className={styles.alertBanner} style={{ background: "#1E293B" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+          <AlertTriangle size={16} style={{ color: "#F59E0B", flexShrink: 0 }} />
+          <span>{t.result.alertVeryHigh} {link}</span>
+        </span>
       </div>
     );
   }
   if (score >= 60) {
     return (
-      <div className={styles.alertBanner} style={{ background: "#A63D2F" }}>
-        <span>{t.result.alertHigh} {link}</span>
+      <div className={styles.alertBanner} style={{ background: "#334155" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+          <AlertTriangle size={16} style={{ color: "#F59E0B", flexShrink: 0 }} />
+          <span>{t.result.alertHigh} {link}</span>
+        </span>
       </div>
     );
   }
   if (score >= 40) {
     return (
-      <div className={styles.alertBanner} style={{ background: "#C07A2A" }}>
-        <span>{t.result.alertModerate} {link}</span>
+      <div className={styles.alertBanner} style={{ background: "#475569" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+          <Info size={16} style={{ color: "#F59E0B", flexShrink: 0 }} />
+          <span>{t.result.alertModerate} {link}</span>
+        </span>
       </div>
     );
   }
   return (
-    <div className={styles.alertBanner} style={{ background: "#4A7C59" }}>
-      <span>{t.result.alertLow}</span>
+    <div className={styles.alertBanner} style={{ background: "#334D3D" }}>
+      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+        <CheckCircle size={16} style={{ color: "#10B981", flexShrink: 0 }} />
+        <span>{t.result.alertLow}</span>
+      </span>
     </div>
   );
 }
@@ -219,10 +236,13 @@ export default function Result() {
   const searchString = useSearch();
   const searchParams = new URLSearchParams(searchString);
   const address = searchParams.get("address") || "";
+  const context = searchParams.get("context") || "";
+  const schoolName = searchParams.get("school") || "";
+  const isSchoolContext = context === "school";
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const { isPregnant, setIsPregnant } = usePregnancyMode();
-  const [activeTab, setActiveTab] = useState<"reps" | "foia" | "peds" | "landlord" | "free-filter" | "subsidy">("free-filter");
+  const [activeTab, setActiveTab] = useState<"reps" | "foia" | "peds" | "landlord" | "free-filter" | "subsidy" | "school-district">(isSchoolContext ? "school-district" : "free-filter");
   const [housingStatus, setHousingStatus] = useState<"own" | "rent" | null>(null);
   const [contributeTab, setContributeTab] = useState<"watertest" | "verifypipe">("watertest");
   const [showContribute, setShowContribute] = useState(false);
@@ -236,6 +256,8 @@ export default function Result() {
   );
 
   const score = risk ? Math.round(risk.score) : 0;
+  const confidence = risk ? getDataConfidence(risk) : "LOW";
+  const margin = confidence === "HIGH" ? 5 : confidence === "MODERATE" ? 12 : 20;
 
   const { data: ccrTranslation, isLoading: ccrLoading } = useQuery({
     queryKey: ["ccr-translation", address, (risk as any)?.water_district, score],
@@ -392,7 +414,7 @@ export default function Result() {
       @page {
         margin: 2cm;
         @bottom-center {
-          content: "Plumbum · plumbum.io · Data: EPA, Census, USGS";
+          content: "Plumbum · plumbummap.org · Data: EPA, Census, USGS";
           font-family: 'Inter', sans-serif;
           font-size: 11px;
           color: #000000;
@@ -516,7 +538,9 @@ export default function Result() {
                   type="button"
                 >
                   {copiedAddress ? (
-                    <span className={styles.copiedText}>✓ Copied</span>
+                    <span className={styles.copiedText} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      <Check size={12} /> Copied
+                    </span>
                   ) : (
                     <svg className={styles.copyAddressIcon} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
@@ -526,6 +550,11 @@ export default function Result() {
                 </button>
               </div>
               <div className={styles.addressLabel}>{risk.geocoded_address || address}</div>
+              
+              <div className={styles.sourcingNotice}>
+                <Info size={14} className={styles.sourcingIcon} style={{ flexShrink: 0, marginTop: '2px' }} />
+                <p className={styles.sourcingText}>{t.result.sourcingExplanation}</p>
+              </div>
               
               <div className={styles.topLayoutGrid}>
                 <div className={styles.topLayoutMain}>
@@ -542,9 +571,9 @@ export default function Result() {
                           <div className={styles.confidenceMeta}>Data Confidence</div>
                           <div
                             className={styles.confidenceBadge}
-                            style={{ color: CONFIDENCE_COLORS[getDataConfidence(risk)] }}
+                            style={{ color: CONFIDENCE_COLORS[confidence] }}
                           >
-                            {getDataConfidence(risk)}
+                            {confidence}
                           </div>
                           <div className={styles.confidenceHint} title="Confidence is based on the availability of digitized municipal records versus predictive census modeling.">
                             Based on digitized records vs.{" "}
@@ -556,34 +585,28 @@ export default function Result() {
                             </span>
                             <span className={styles.confidenceQ}>?</span>
                           </div>
+                          <div className={styles.rangeIndicator}>
+                            <div className={styles.rangeMeta}>Estimated Risk Range</div>
+                            <div className={styles.rangeValue}>
+                              {Math.max(0, displayScore - margin)} – {Math.min(100, displayScore + margin)} / 100
+                            </div>
+                            <div className={styles.rangeMargin}>
+                              (Margin of Error: ±{margin} pts)
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className={styles.riskLevel} style={{ color: getScoreColor(score), fontWeight: 600 }}>
                         {riskLevelLabel} {t.result.riskSuffix}
                       </div>
+                      <div className={styles.dataLimitationNotice}>
+                        <AlertTriangle size={14} className={styles.limitationIcon} />
+                        <p className={styles.limitationText}>{t.result.dataLimitationNotice}</p>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Renter vs. Owner Split Path - The very first question asked after score */}
-                  <div className={styles.housingToggleTop}>
-                    <span className={styles.housingToggleLabel}>Are you a renter or owner of this property?</span>
-                    <div className={styles.housingRadioGroup}>
-                      <button
-                        type="button"
-                        className={`${styles.housingBtn} ${housingStatus === "rent" ? styles.housingBtnActive : ""}`}
-                        onClick={() => setHousingStatus("rent")}
-                      >
-                        I Rent This Property
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.housingBtn} ${housingStatus === "own" ? styles.housingBtnActive : ""}`}
-                        onClick={() => setHousingStatus("own")}
-                      >
-                        I Own This Property
-                      </button>
-                    </div>
-                  </div>
+
 
                   {/* Pregnancy Mode Toggle */}
                   <div className={styles.pregnancyToggleContainer}>
@@ -636,9 +659,9 @@ export default function Result() {
                     </div>
                   )}
                   <div className={styles.ccrFooter}>
-                    <a href={(risk as any).ccr_url || "https://www.epa.gov/ccr"} target="_blank" rel="noreferrer" className={styles.ccrLink}>
-                      View official PDF report ↗
-                    </a>
+                     <a href="https://www.epa.gov/ccr/understanding-your-annual-water-quality-report" target="_blank" rel="noreferrer" className={styles.ccrLink}>
+                       View official PDF report ↗
+                     </a>
                   </div>
                 </div>
               </div>
@@ -748,25 +771,14 @@ export default function Result() {
                     <div className={styles.tractCell} style={{ gridColumn: "1 / -1", borderRight: "none" }}>
                       <div className={styles.dataLabel}>EPA Water Quality Report (CCR)</div>
                       <div className={styles.dataValue}>
-                        {(risk as any).ccr_url ? (
                           <a
-                            href={(risk as any).ccr_url}
+                            href="https://www.epa.gov/ccr/understanding-your-annual-water-quality-report"
                             target="_blank"
                             rel="noreferrer"
                             className={styles.ccrLink}
                           >
                             View official PDF ↗
                           </a>
-                        ) : (
-                          <a
-                            href="https://www.epa.gov/ccr"
-                            target="_blank"
-                            rel="noreferrer"
-                            className={styles.ccrLink}
-                          >
-                            View official PDF ↗
-                          </a>
-                        )}
                       </div>
                     </div>
 
@@ -801,20 +813,34 @@ export default function Result() {
                 <div className={styles.actionPanel}>
                   <h3>{t.result.useCertifiedFilter}</h3>
                   <p>{t.result.useCertifiedFilterBody}</p>
-                  <a href="https://www.nsf.org/consumer-resources/articles/certified-filters-lead" target="_blank" rel="noreferrer">{t.result.filterGuideLink}</a>
+                  <a href="https://www.epa.gov/water-research/consumer-tool-identifying-point-use-and-pitcher-filters-certified-reduce-lead" target="_blank" rel="noreferrer">{t.result.filterGuideLink}</a>
                 </div>
 
-                {/* Owner-specific cards */}
-                {housingStatus === "own" && (
+                {isSchoolContext ? (
                   <>
                     <div className={styles.actionPanel}>
-                      <div className={styles.actionPanelTag}>Homeowner</div>
+                      <div className={styles.actionPanelTag}>School Action</div>
+                      <h3>Request Water Testing Records</h3>
+                      <p>Under the EPA's 3Ts (Training, Testing, Taking Action) guidelines, schools should make their lead testing records public. You have the right to request these records from the district.</p>
+                      <a href="https://www.epa.gov/ground-water-and-drinking-water/3ts-reducing-lead-drinking-water" target="_blank" rel="noreferrer">EPA 3Ts Guidelines →</a>
+                    </div>
+                    <div className={styles.actionPanel}>
+                      <div className={styles.actionPanelTag}>Advocacy</div>
+                      <h3>Attend School Board Meetings</h3>
+                      <p>Raise awareness about lead risk in your school district. Speak during public comment to urge the superintendent and board to prioritize lead line replacement and filter installation.</p>
+                      <a href="https://www.epa.gov/sites/default/files/2015-06/documents/school_siting_guidelines-2.pdf" target="_blank" rel="noreferrer">EPA Schools Guide →</a>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={styles.actionPanel}>
+                      <div className={styles.actionPanelTag}>Homeowner Path</div>
                       <h3>Order a DIY Scratch-Test Kit</h3>
                       <p>A certified lead-check swab kit lets you test painted surfaces, soil, and fixtures at home. Results in 30 seconds. EPA-recognized for residential screening.</p>
                       <a href="https://www.epa.gov/lead/lead-test-kits" target="_blank" rel="noreferrer">Browse EPA-listed kits →</a>
                     </div>
                     <div className={styles.actionPanel}>
-                      <div className={styles.actionPanelTag}>Homeowner</div>
+                      <div className={styles.actionPanelTag}>Homeowner Path</div>
                       <h3>Local Subsidy & Replacement Grants</h3>
                       {subsidyLoading ? (
                         <p style={{ fontStyle: "italic" }}>Searching city LSLR subsidy database...</p>
@@ -843,20 +869,14 @@ export default function Result() {
                         </>
                       )}
                     </div>
-                  </>
-                )}
-
-                {/* Renter-specific cards */}
-                {housingStatus === "rent" && (
-                  <>
                     <div className={styles.actionPanel}>
-                      <div className={styles.actionPanelTag}>Renter</div>
+                      <div className={styles.actionPanelTag}>Renter Path</div>
                       <h3>View Your Tenant Rights</h3>
                       <p>Landlords in most states must disclose known lead hazards. You may have the right to demand remediation or terminate your lease without penalty if lead levels exceed federal limits.</p>
                       <a href="https://www.hud.gov/program_offices/healthy_homes/healthyhomes/lead" target="_blank" rel="noreferrer">HUD Tenant Rights Guide →</a>
                     </div>
                     <div className={styles.actionPanel}>
-                      <div className={styles.actionPanelTag}>Renter</div>
+                      <div className={styles.actionPanelTag}>Renter Path</div>
                       <h3>Log a Landlord Notification</h3>
                       <p>Formally notify your landlord of this risk score and create a timestamped public record on the Accountability Portal. This protects your rights and pressures action.</p>
                       <Link
@@ -869,66 +889,29 @@ export default function Result() {
                   </>
                 )}
               </div>
-
-              {housingStatus === null && (
-                <div className={styles.actionNudge}>
-                  Select <strong>I Rent This Property</strong> or <strong>I Own This Property</strong> at the top of the page to personalize your recommendations.
-                </div>
-              )}
             </div>
           </section>
 
-          {/* ── Unified "Take Action" tabbed section ── */}
           <section className={styles.takeActionSection}>
             <div className={styles.container}>
               <div className={styles.takeActionMeta}>Take Action</div>
-              <h2 className={styles.takeActionHeadline}>Protect yourself and your family</h2>
+              <h2 className={styles.takeActionHeadline}>What you can do</h2>
 
-              {housingStatus === null ? (
-                <div className={styles.actionNudge} style={{ border: "1px dashed var(--color-border)", padding: "24px", textAlign: "center" }}>
-                  Please select your renter or owner status above to generate customizable action letters.
-                </div>
-              ) : (
+              {isSchoolContext ? (
+                /* ── SCHOOL CONTEXT TABS ── */
                 <>
-                  {/* Flat brutalist tab menu */}
                   <div className={styles.tabMenu} role="tablist">
-                    {housingStatus === "own" && (
-                      <button
-                        id="tab-subsidy"
-                        role="tab"
-                        aria-selected={activeTab === "subsidy"}
-                        aria-controls="tabpanel-subsidy"
-                        className={`${styles.tabBtn} ${activeTab === "subsidy" ? styles.tabBtnActive : ""}`}
-                        onClick={() => setActiveTab("subsidy")}
-                        type="button"
-                      >
-                        Find Local Subsidy
-                      </button>
-                    )}
                     <button
-                      id="tab-free-filter"
+                      id="tab-school-district"
                       role="tab"
-                      aria-selected={activeTab === "free-filter"}
-                      aria-controls="tabpanel-free-filter"
-                      className={`${styles.tabBtn} ${activeTab === "free-filter" ? styles.tabBtnActive : ""}`}
-                      onClick={() => setActiveTab("free-filter")}
+                      aria-selected={activeTab === "school-district"}
+                      aria-controls="tabpanel-school-district"
+                      className={`${styles.tabBtn} ${activeTab === "school-district" ? styles.tabBtnActive : ""}`}
+                      onClick={() => setActiveTab("school-district")}
                       type="button"
                     >
-                      Claim Free Filter
+                      Notify School District
                     </button>
-                    {housingStatus === "rent" && (
-                      <button
-                        id="tab-landlord"
-                        role="tab"
-                        aria-selected={activeTab === "landlord"}
-                        aria-controls="tabpanel-landlord"
-                        className={`${styles.tabBtn} ${activeTab === "landlord" ? styles.tabBtnActive : ""}`}
-                        onClick={() => setActiveTab("landlord")}
-                        type="button"
-                      >
-                        Notify Landlord
-                      </button>
-                    )}
                     <button
                       id="tab-peds"
                       role="tab"
@@ -940,43 +923,195 @@ export default function Result() {
                     >
                       {isPregnant ? "OB/GYN Blood Test Request" : "Pediatrician Blood Test Request"}
                     </button>
-                    {housingStatus === "own" && (
-                      <button
-                        id="tab-reps"
-                        role="tab"
-                        aria-selected={activeTab === "reps"}
-                        aria-controls="tabpanel-reps"
-                        className={`${styles.tabBtn} ${activeTab === "reps" ? styles.tabBtnActive : ""}`}
-                        onClick={() => setActiveTab("reps")}
-                        type="button"
-                      >
-                        Contact Representatives
-                      </button>
-                    )}
+                    <button
+                      id="tab-foia"
+                      role="tab"
+                      aria-selected={activeTab === "foia"}
+                      aria-controls="tabpanel-foia"
+                      className={`${styles.tabBtn} ${activeTab === "foia" ? styles.tabBtnActive : ""}`}
+                      onClick={() => setActiveTab("foia")}
+                      type="button"
+                    >
+                      FOIA — Water Testing Records
+                    </button>
+                    <button
+                      id="tab-reps"
+                      role="tab"
+                      aria-selected={activeTab === "reps"}
+                      aria-controls="tabpanel-reps"
+                      className={`${styles.tabBtn} ${activeTab === "reps" ? styles.tabBtnActive : ""}`}
+                      onClick={() => setActiveTab("reps")}
+                      type="button"
+                    >
+                      Contact School Board & Reps
+                    </button>
+                  </div>
+
+                  {/* School District Letter panel */}
+                  <div
+                    id="tabpanel-school-district"
+                    role="tabpanel"
+                    aria-labelledby="tab-school-district"
+                    className={`${styles.tabPanel} ${activeTab === "school-district" ? styles.tabPanelActive : ""}`}
+                  >
+                    <SchoolDistrictLetter
+                      address={address}
+                      schoolName={schoolName}
+                      score={score}
+                      riskLevel={riskLevel}
+                      factors={((risk as any).factors ?? []).map((f: any) => ({
+                        name: f.name ?? "",
+                        detail: f.detail ?? "",
+                        score: Number(f.score ?? 0),
+                        max: Number(f.max ?? 25),
+                      }))}
+                      censusTract={risk.census_tract ?? ""}
+                    />
+                  </div>
+
+                  {/* Pediatrician panel — reworded for school context */}
+                  <div
+                    id="tabpanel-peds"
+                    role="tabpanel"
+                    aria-labelledby="tab-peds"
+                    className={`${styles.tabPanel} ${activeTab === "peds" ? styles.tabPanelActive : ""}`}
+                  >
+                    <PediatricianLetter
+                      address={`${schoolName ? schoolName + ", " : ""}${address}`}
+                      score={score}
+                      riskLevel={riskLevel}
+                      factors={((risk as any).factors ?? []).map((f: any) => ({
+                        name: f.name ?? "",
+                        detail: f.detail ?? "",
+                        score: Number(f.score ?? 0),
+                        max: Number(f.max ?? 25),
+                      }))}
+                      censusTract={risk.census_tract ?? ""}
+                      pctPre1986={(risk as any).pct_pre1986 ?? null}
+                      isPregnant={isPregnant}
+                    />
+                  </div>
+
+                  {/* FOIA panel — retargeted to School District Facilities */}
+                  <div
+                    id="tabpanel-foia"
+                    role="tabpanel"
+                    aria-labelledby="tab-foia"
+                    className={`${styles.tabPanel} ${activeTab === "foia" ? styles.tabPanelActive : ""}`}
+                  >
+                    <FoiaLetter
+                      address={address}
+                      censusTract={risk.census_tract ?? ""}
+                      country={country}
+                    />
+                  </div>
+
+                  {/* Representatives panel — includes note about school board */}
+                  <div
+                    id="tabpanel-reps"
+                    role="tabpanel"
+                    aria-labelledby="tab-reps"
+                    className={`${styles.tabPanel} ${activeTab === "reps" ? styles.tabPanelActive : ""}`}
+                  >
+                    <div style={{ padding: "16px 0 8px", background: "#FFF9F0", border: "1px solid #F0E0C0", borderRadius: "6px", marginBottom: "16px", paddingLeft: "16px", paddingRight: "16px" }}>
+                      <strong style={{ color: "#A63D2F", fontSize: "13px" }}>TIP — School Context:</strong>
+                      <span style={{ fontSize: "13px", color: "#5A5550", marginLeft: "8px" }}>
+                        You can also contact your school board members and school superintendent directly. Look up board contacts at your district\'s official website and include them in your outreach.
+                      </span>
+                    </div>
+                    <RepresentativeSection
+                      address={address}
+                      score={score}
+                      riskLevel={riskLevel}
+                      censusTract={risk.census_tract ?? ""}
+                      waterDistrict={(risk as any).water_district ?? t.result.publicPws}
+                      pctPre1986={score > 60 ? "68%" : score > 40 ? "42%" : "21%"}
+                      epaViolations={score > 60 ? "2" : score > 40 ? "1" : "0"}
+                      country={country}
+                    />
+                  </div>
+                </>
+              ) : (
+                /* ── RESIDENTIAL CONTEXT TABS ── */
+                <>
+                  <div className={styles.tabMenu} role="tablist">
+                    <button
+                      id="tab-subsidy"
+                      role="tab"
+                      aria-selected={activeTab === "subsidy"}
+                      aria-controls="tabpanel-subsidy"
+                      className={`${styles.tabBtn} ${activeTab === "subsidy" ? styles.tabBtnActive : ""}`}
+                      onClick={() => setActiveTab("subsidy")}
+                      type="button"
+                    >
+                      Find Local Subsidy
+                    </button>
+                    <button
+                      id="tab-free-filter"
+                      role="tab"
+                      aria-selected={activeTab === "free-filter"}
+                      aria-controls="tabpanel-free-filter"
+                      className={`${styles.tabBtn} ${activeTab === "free-filter" ? styles.tabBtnActive : ""}`}
+                      onClick={() => setActiveTab("free-filter")}
+                      type="button"
+                    >
+                      Claim Free Filter
+                    </button>
+                    <button
+                      id="tab-landlord"
+                      role="tab"
+                      aria-selected={activeTab === "landlord"}
+                      aria-controls="tabpanel-landlord"
+                      className={`${styles.tabBtn} ${activeTab === "landlord" ? styles.tabBtnActive : ""}`}
+                      onClick={() => setActiveTab("landlord")}
+                      type="button"
+                    >
+                      Notify Landlord
+                    </button>
+                    <button
+                      id="tab-peds"
+                      role="tab"
+                      aria-selected={activeTab === "peds"}
+                      aria-controls="tabpanel-peds"
+                      className={`${styles.tabBtn} ${activeTab === "peds" ? styles.tabBtnActive : ""}`}
+                      onClick={() => setActiveTab("peds")}
+                      type="button"
+                    >
+                      {isPregnant ? "OB/GYN Blood Test Request" : "Pediatrician Blood Test Request"}
+                    </button>
+                    <button
+                      id="tab-reps"
+                      role="tab"
+                      aria-selected={activeTab === "reps"}
+                      aria-controls="tabpanel-reps"
+                      className={`${styles.tabBtn} ${activeTab === "reps" ? styles.tabBtnActive : ""}`}
+                      onClick={() => setActiveTab("reps")}
+                      type="button"
+                    >
+                      Contact Representatives
+                    </button>
                   </div>
 
                   {/* Landlord tab panel */}
-                  {housingStatus === "rent" && (
-                    <div
-                      id="tabpanel-landlord"
-                      role="tabpanel"
-                      aria-labelledby="tab-landlord"
-                      className={`${styles.tabPanel} ${activeTab === "landlord" ? styles.tabPanelActive : ""}`}
-                    >
-                      <LandlordLetter
-                        address={address}
-                        score={score}
-                        riskLevel={riskLevel}
-                        factors={((risk as any).factors ?? []).map((f: any) => ({
-                          name: f.name ?? "",
-                          detail: f.detail ?? "",
-                          score: Number(f.score ?? 0),
-                          max: Number(f.max ?? 25),
-                        }))}
-                        censusTract={risk.census_tract ?? ""}
-                      />
-                    </div>
-                  )}
+                  <div
+                    id="tabpanel-landlord"
+                    role="tabpanel"
+                    aria-labelledby="tab-landlord"
+                    className={`${styles.tabPanel} ${activeTab === "landlord" ? styles.tabPanelActive : ""}`}
+                  >
+                    <LandlordLetter
+                      address={address}
+                      score={score}
+                      riskLevel={riskLevel}
+                      factors={((risk as any).factors ?? []).map((f: any) => ({
+                        name: f.name ?? "",
+                        detail: f.detail ?? "",
+                        score: Number(f.score ?? 0),
+                        max: Number(f.max ?? 25),
+                      }))}
+                      censusTract={risk.census_tract ?? ""}
+                    />
+                  </div>
 
                   {/* Claim Free Filter tab panel */}
                   <div
@@ -992,59 +1127,57 @@ export default function Result() {
                   </div>
 
                   {/* Find Local Subsidy tab panel */}
-                  {housingStatus === "own" && (
-                    <div
-                      id="tabpanel-subsidy"
-                      role="tabpanel"
-                      aria-labelledby="tab-subsidy"
-                      className={`${styles.tabPanel} ${activeTab === "subsidy" ? styles.tabPanelActive : ""}`}
-                    >
-                      <section className={styles.section} style={{ background: "#FEFCF9", padding: "48px 0" }}>
-                        <div className={styles.container} style={{ maxWidth: "800px", margin: "0 auto" }}>
-                          <div className={styles.sectionMeta} style={{ color: "#a63d2f", fontWeight: 700 }}>FINANCIAL AID</div>
-                          <h2 className={styles.heading} style={{ fontSize: "28px", fontWeight: 700, margin: "10px 0 20px" }}>Local LSLR Subsidy Finder</h2>
-                          <p className={styles.body} style={{ color: "#5A5550", fontSize: "14px", lineHeight: "1.6", marginBottom: "24px" }}>
-                            Digging up a lead service line costs between $5,000 and $10,000. Homeowners own the "private side" of the pipe (from the curb to the house).
-                            We scanned federal, state, and city-level records to find replacement grants or interest-free loan programs for your municipality.
-                          </p>
+                  <div
+                    id="tabpanel-subsidy"
+                    role="tabpanel"
+                    aria-labelledby="tab-subsidy"
+                    className={`${styles.tabPanel} ${activeTab === "subsidy" ? styles.tabPanelActive : ""}`}
+                  >
+                    <section className={styles.section} style={{ background: "#FEFCF9", padding: "48px 0" }}>
+                      <div className={styles.container} style={{ maxWidth: "800px", margin: "0 auto" }}>
+                        <div className={styles.sectionMeta} style={{ color: "#a63d2f", fontWeight: 700 }}>FINANCIAL AID</div>
+                        <h2 className={styles.heading} style={{ fontSize: "28px", fontWeight: 700, margin: "10px 0 20px" }}>Local LSLR Subsidy Finder</h2>
+                        <p className={styles.body} style={{ color: "#5A5550", fontSize: "14px", lineHeight: "1.6", marginBottom: "24px" }}>
+                          Digging up a lead service line costs between $5,000 and $10,000. Homeowners own the "private side" of the pipe (from the curb to the house).
+                          We scanned federal, state, and city-level records to find replacement grants or interest-free loan programs for your municipality.
+                        </p>
 
-                          <div style={{
-                            background: "#FAF9F6",
-                            border: "1.5px solid var(--color-border)",
-                            padding: "24px",
-                            borderRadius: "4px",
-                            fontFamily: "Inter, sans-serif"
-                          }}>
-                            {subsidyLoading ? (
-                              <div style={{ fontStyle: "italic", color: "#7A6F65" }}>Searching city LSLR subsidy database...</div>
-                            ) : subsidyData?.summary ? (
-                              <div style={{ fontSize: "14px", lineHeight: "1.7", color: "var(--color-text)" }}>
-                                {subsidyData.summary.split("\n").filter((l: string) => l.trim().length > 0).map((line: string, idx: number) => {
-                                  if (line.trim().startsWith("-") || line.trim().startsWith("*")) {
-                                    return (
-                                      <div key={idx} style={{ display: "flex", gap: "10px", marginBottom: "12px", alignItems: "flex-start" }}>
-                                        <span style={{ color: "#a63d2f", fontSize: "18px", lineHeight: "1" }}>•</span>
-                                        <span>
-                                          {line.replace(/^[-*]\s*/, "").split("**").map((part: string, pIdx: number) => 
-                                            pIdx % 2 === 1 ? <strong key={pIdx} style={{ color: "#1A1614", fontWeight: 700 }}>{part}</strong> : part
-                                          )}
-                                        </span>
-                                      </div>
-                                    );
-                                  }
-                                  return <p key={idx} style={{ marginBottom: "12px" }}>{line}</p>;
-                                })}
-                              </div>
-                            ) : (
-                              <div style={{ color: "#7A6F65" }}>
-                                No specific program was found for your city. Please contact your local water utility to check for State Revolving Fund (SRF) grant availability.
-                              </div>
-                            )}
-                          </div>
+                        <div style={{
+                          background: "#FAF9F6",
+                          border: "1.5px solid var(--color-border)",
+                          padding: "24px",
+                          borderRadius: "4px",
+                          fontFamily: "Inter, sans-serif"
+                        }}>
+                          {subsidyLoading ? (
+                            <div style={{ fontStyle: "italic", color: "#7A6F65" }}>Searching city LSLR subsidy database...</div>
+                          ) : subsidyData?.summary ? (
+                            <div style={{ fontSize: "14px", lineHeight: "1.7", color: "var(--color-text)" }}>
+                              {subsidyData.summary.split("\n").filter((l: string) => l.trim().length > 0).map((line: string, idx: number) => {
+                                if (line.trim().startsWith("-") || line.trim().startsWith("*")) {
+                                  return (
+                                    <div key={idx} style={{ display: "flex", gap: "10px", marginBottom: "12px", alignItems: "flex-start" }}>
+                                      <span style={{ color: "#a63d2f", fontSize: "18px", lineHeight: "1" }}>•</span>
+                                      <span>
+                                        {line.replace(/^[-*]\s*/, "").split("**").map((part: string, pIdx: number) =>
+                                          pIdx % 2 === 1 ? <strong key={pIdx} style={{ color: "#1A1614", fontWeight: 700 }}>{part}</strong> : part
+                                        )}
+                                      </span>
+                                    </div>
+                                  );
+                                }
+                                return <p key={idx} style={{ marginBottom: "12px" }}>{line}</p>;
+                              })}
+                            </div>
+                          ) : (
+                            <div style={{ color: "#7A6F65" }}>
+                              No specific program was found for your city. Please contact your local water utility to check for State Revolving Fund (SRF) grant availability.
+                            </div>
+                          )}
                         </div>
-                      </section>
-                    </div>
-                  )}
+                      </div>
+                    </section>
+                  </div>
 
                   {/* Pediatrician tab panel */}
                   <div
@@ -1070,23 +1203,21 @@ export default function Result() {
                   </div>
 
                   {/* Representatives tab panel */}
-                  {housingStatus === "own" && (
-                    <div
-                      id="tabpanel-reps"
-                      role="tabpanel"
-                      aria-labelledby="tab-reps"
-                      className={`${styles.tabPanel} ${activeTab === "reps" ? styles.tabPanelActive : ""}`}
-                    >
-                      <RepresentativeSection
-                        address={address} score={score} riskLevel={riskLevel}
-                        censusTract={risk.census_tract ?? ""}
-                        waterDistrict={(risk as any).water_district ?? t.result.publicPws}
-                        pctPre1986={score > 60 ? "68%" : score > 40 ? "42%" : "21%"}
-                        epaViolations={score > 60 ? "2" : score > 40 ? "1" : "0"}
-                        country={country}
-                      />
-                    </div>
-                  )}
+                  <div
+                    id="tabpanel-reps"
+                    role="tabpanel"
+                    aria-labelledby="tab-reps"
+                    className={`${styles.tabPanel} ${activeTab === "reps" ? styles.tabPanelActive : ""}`}
+                  >
+                    <RepresentativeSection
+                      address={address} score={score} riskLevel={riskLevel}
+                      censusTract={risk.census_tract ?? ""}
+                      waterDistrict={(risk as any).water_district ?? t.result.publicPws}
+                      pctPre1986={score > 60 ? "68%" : score > 40 ? "42%" : "21%"}
+                      epaViolations={score > 60 ? "2" : score > 40 ? "1" : "0"}
+                      country={country}
+                    />
+                  </div>
                 </>
               )}
             </div>
@@ -1311,16 +1442,12 @@ export default function Result() {
                 Lead pipe contamination risk analysis based on public EPA and Census datasets.
               </div>
               <div style={{ fontSize: "15px", color: "#888880", fontWeight: "600", letterSpacing: "0.05em" }}>
-                plumbum.io
+                plumbummap.org
               </div>
             </div>
           </div>
 
-          <AlertSubscription
-            address={address}
-            score={score}
-            censusTract={risk.census_tract ?? ""}
-          />
+
 
           <footer className={styles.footer}>
             <div className={styles.container}>

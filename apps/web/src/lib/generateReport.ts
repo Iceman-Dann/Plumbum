@@ -181,7 +181,7 @@ export async function generateReport(
   ];
 
   let actions = [
-    { title: t.pdf.getWaterTestTitle, body: t.pdf.getWaterTestBody, url: "epa.gov/ground-water-and-drinking-water/get-your-water-tested" },
+    { title: t.pdf.getWaterTestTitle, body: t.pdf.getWaterTestBody, url: "https://www.epa.gov/sites/default/files/2015-11/documents/2005_09_14_faq_fs_homewatertesting.pdf" },
     { title: t.pdf.contactUtilityTitle, body: t.pdf.contactUtilityBody, url: "epa.gov/ground-water-and-drinking-water/find-contacts-drinking-water-services" },
     { title: t.pdf.useFilterTitle, body: t.pdf.useFilterBody, url: "nsf.org/consumer-resources/articles/certified-filters-lead" },
   ];

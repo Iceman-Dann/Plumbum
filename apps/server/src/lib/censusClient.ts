@@ -49,18 +49,8 @@ const tractCache = new Map<string, TractHousingData | null>();
 const DATA_PATH = path.resolve(process.cwd(), "data", "census_housing.json");
 const DATA_CACHE = new Map<string, TractHousingData>();
 
-// Pre-warm tract cache for the 6 featured cities with null to avoid external Census API lookups on homepage load
-const PREWARMED_TRACT_KEYS = [
-  "34:013:007900", // Newark
-  "17:031:310300", // Chicago
-  "26:163:521400", // Detroit
-  "24:510:150100", // Baltimore
-  "39:035:197900", // Cleveland
-  "42:003:090200"  // Pittsburgh
-];
-for (const key of PREWARMED_TRACT_KEYS) {
-  tractCache.set(key, null);
-}
+// Pre-warm tract cache list is not pre-populated with nulls because it prevents on-demand fetching for featured cities.
+
 
 export function getTractCacheStats() {
   return {

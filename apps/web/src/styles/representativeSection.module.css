@@ -79,7 +79,7 @@
   background: linear-gradient(90deg, #EDEAE4 25%, #E4DED7 50%, #EDEAE4 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
-  border-radius: 0;
+  border-radius: 6px;
 }
 
 @keyframes shimmer {
@@ -102,6 +102,7 @@
   padding: 18px 20px;
   background: #FFFFFF;
   border: 1.5px solid var(--color-border);
+  border-radius: 6px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
   text-align: left;

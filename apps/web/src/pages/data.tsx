@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "@/hooks/useTranslation";
 import styles from "../styles/data.module.css";
 
@@ -10,20 +11,76 @@ interface Stats {
   no_db?: boolean;
 }
 
+interface RecentRow {
+  fips: string;
+  test_date: string;
+  lead_ppb: number;
+  result_category: string;
+  submitted_at: string;
+}
+
 export default function Data() {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const refreshData = async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["test-results-stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["test-results-recent"] }),
+      ]);
+    };
+
+    const handleSubmission = () => {
+      void refreshData();
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === "plumbum:test-submitted") {
+        void refreshData();
+      }
+    };
+
+    window.addEventListener("plumbum:test-submitted", handleSubmission);
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("plumbum:test-submitted", handleSubmission);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, [queryClient]);
+
   const { data: stats, isLoading } = useQuery<Stats>({
     queryKey: ["test-results-stats"],
     queryFn: async () => {
       const res = await fetch("/api/test-results/stats");
       return res.json() as Promise<Stats>;
     },
+    refetchInterval: 15000,
+    refetchOnWindowFocus: true,
   });
 
-  const totalTests = stats?.total_tests ?? 0;
-  const tractsCovered = stats?.tracts_covered ?? 0;
-  const avgPpb = stats?.avg_ppb;
-  const pctAction = stats?.pct_above_action ?? 0;
+  const { data: recentData, isLoading: recentLoading } = useQuery<{ rows: RecentRow[] }>({
+    queryKey: ["test-results-recent"],
+    queryFn: async () => {
+      const res = await fetch("/api/test-results/recent?limit=10");
+      return res.json() as Promise<{ rows: RecentRow[] }>;
+    },
+    refetchInterval: 15000,
+    refetchOnWindowFocus: true,
+  });
+
+  const visibleTestCount = stats?.total_tests ?? 0;
+  const downloadLabel = t.data.downloadBtn.replace("{count}", `${visibleTestCount}`);
+  const tableRows = (recentData?.rows ?? []).map(row => ({
+    fips: row.fips,
+    testDate: row.test_date,
+    leadPpb: row.lead_ppb?.toString() ?? "—",
+    result: (row.result_category || "UNKNOWN")
+      .toString()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, char => char.toUpperCase()),
+  }));
 
   return (
     <div className={styles.wrapper}>
@@ -37,26 +94,49 @@ export default function Data() {
       <section className={styles.statsSection}>
         <div className={styles.statsGrid}>
           <div className={styles.statBox}>
-            <div className={styles.statNum}>{isLoading ? "—" : totalTests.toLocaleString()}</div>
-            <div className={styles.statLabel}>{t.data.testsSubmitted}</div>
-            <div className={styles.statSub}>{t.data.allTime}</div>
-          </div>
-          <div className={styles.statBox}>
-            <div className={styles.statNum}>{isLoading ? "—" : tractsCovered.toLocaleString()}</div>
-            <div className={styles.statLabel}>{t.data.tractsCovered}</div>
-            <div className={styles.statSub}>{t.data.uniqueGeographies}</div>
-          </div>
-          <div className={styles.statBox}>
-            <div className={styles.statNum}>{isLoading ? "—" : avgPpb != null ? `${avgPpb}` : "—"}</div>
-            <div className={styles.statLabel}>{t.data.avgLead}</div>
-            <div className={styles.statSub}>{t.data.ppbUnit}</div>
-          </div>
-          <div className={styles.statBox}>
-            <div className={styles.statNum} style={{ color: pctAction > 0 ? "#C07A2A" : "#F4EFE8" }}>
-              {isLoading ? "—" : `${pctAction}%`}
+            <div className={styles.statLabel}>{t.data.currentStatusTitle}</div>
+            <div className={styles.statNum}>
+              {isLoading ? "—" : `${visibleTestCount} test result${visibleTestCount === 1 ? "" : "s"} submitted`}
             </div>
-            <div className={styles.statLabel}>{t.data.aboveAction}</div>
-            <div className={styles.statSub}>{t.data.actionThreshold}</div>
+            <div className={styles.statSub}>
+              {stats?.tracts_covered ? `${stats.tracts_covered} tracts covered` : t.data.currentStatusRange}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.resultsSection}>
+        <div className={styles.resultsInner}>
+          <div className={styles.sectionMeta}>{t.data.sampleResultsMeta}</div>
+          <h2 className={styles.sectionHeadline}>{t.data.sampleResultsHeadline}</h2>
+          <p className={styles.sectionBody}>{t.data.sampleResultsIntro}</p>
+          <div className={styles.tableWrap}>
+            <table className={styles.resultsTable}>
+              <thead>
+                <tr>
+                  <th>{t.data.sampleTableFips}</th>
+                  <th>{t.data.sampleTableDate}</th>
+                  <th>{t.data.sampleTableLead}</th>
+                  <th>{t.data.sampleTableResult}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableRows.length === 0 ? (
+                  <tr>
+                    <td colSpan={4}>No submitted test rows yet.</td>
+                  </tr>
+                ) : (
+                  tableRows.map(row => (
+                    <tr key={`${row.fips}-${row.testDate}`}>
+                      <td>{row.fips}</td>
+                      <td>{row.testDate}</td>
+                      <td>{row.leadPpb}</td>
+                      <td>{row.result}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -67,17 +147,8 @@ export default function Data() {
           <h2 className={styles.sectionHeadline}>{t.data.downloadHeadline}</h2>
           <p className={styles.sectionBody}>{t.data.downloadBody}</p>
           <a href="/api/test-results/download" className={styles.downloadBtn} download>
-            {t.data.downloadBtn}
+            {downloadLabel}
           </a>
-        </div>
-      </section>
-
-      <section className={styles.citeSection}>
-        <div className={styles.citeInner}>
-          <div className={styles.sectionMeta}>{t.data.citeMeta}</div>
-          <h2 className={styles.sectionHeadline}>{t.data.citeHeadline}</h2>
-          <div className={styles.citeBox}>{t.data.citation}</div>
-          <p className={styles.citeNote}>{t.data.citeNote}</p>
         </div>
       </section>
 

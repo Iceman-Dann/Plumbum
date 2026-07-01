@@ -109,7 +109,7 @@ export async function generateLandlordLetter(data: LandlordLetterData): Promise<
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   setColor(doc, [180, 170, 160]);
-  doc.text("Landlord Lead Risk Accountability Portal · plumbum.io", M + 22, 11.5);
+  doc.text("Landlord Lead Risk Accountability Portal · plumbummap.org", M + 22, 11.5);
 
   // ── Document type label ────────────────────────────────────────────────────
   let y = 30;
@@ -136,7 +136,7 @@ export async function generateLandlordLetter(data: LandlordLetterData): Promise<
   doc.text(para1Lines, M, y);
   y += para1Lines.length * 5.5 + 4;
 
-  const para2 = `According to a risk analysis conducted by Plumbum (plumbum.io), this address received a lead pipe risk score of ${data.score} out of 100, which is classified as a ${data.riskLevel.toUpperCase()} RISK profile.`;
+  const para2 = `According to a risk analysis conducted by Plumbum (plumbummap.org), this address received a lead pipe risk score of ${data.score} out of 100, which is classified as a ${data.riskLevel.toUpperCase()} RISK profile.`;
   const para2Lines = doc.splitTextToSize(para2, CW);
   doc.text(para2Lines, M, y);
   y += para2Lines.length * 5.5 + 4;
@@ -217,8 +217,8 @@ export async function generateLandlordLetter(data: LandlordLetterData): Promise<
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   setColor(doc, CHARCOAL);
-  doc.text("Plumbum methodology and data sources: plumbum.io/methodology", M + 4, y + 11);
-  doc.text("Plumbum Landlord Accountability Portal: plumbum.io/accountability", M + 4, y + 17);
+  doc.text("Plumbum methodology and data sources: plumbummap.org/methodology", M + 4, y + 11);
+  doc.text("Plumbum Landlord Accountability Portal: plumbummap.org/accountability", M + 4, y + 17);
 
   // ── Footer ─────────────────────────────────────────────────────────────────
   drawFooter(doc);

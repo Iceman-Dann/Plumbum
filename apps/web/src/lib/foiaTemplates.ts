@@ -5,7 +5,7 @@ export interface FoiaLetterOpts {
   date: string;
   address: string;
   name: string;
-  email: string;
+  email?: string;
   utilityName: string;
   officerTitle: string;
   utilityAddress: string;
@@ -14,7 +14,7 @@ export interface FoiaLetterOpts {
 }
 
 export function buildFoiaLetterUs(opts: FoiaLetterOpts): string {
-  const { date, address, name, email, utilityName, officerTitle, utilityAddress, foiaLaw, t } = opts;
+  const { date, address, name, utilityName, officerTitle, utilityAddress, foiaLaw, t } = opts;
   const f = t.foia;
   const addr = address || f.addressPlaceholder;
   const bodyIntro = interpolate(f.bodyParagraphUs, { foiaLaw, address: addr });
@@ -43,8 +43,6 @@ ${f.sincerely}
 
 ${name || f.namePlaceholderLetter}
 
-${email || f.emailPlaceholderLetter}
-
 ${date}`;
 }
 
@@ -52,12 +50,12 @@ export interface FoiaCanadaLetterOpts {
   date: string;
   address: string;
   name: string;
-  email: string;
+  email?: string;
   t: Translations;
 }
 
 export function buildFoiaLetterCa(opts: FoiaCanadaLetterOpts): string {
-  const { date, address, name, email, t } = opts;
+  const { date, address, name, t } = opts;
   const f = t.foia;
   const addr = address || f.addressPlaceholder;
   const bodyIntro = interpolate(f.bodyParagraphCa, { address: addr });
@@ -85,8 +83,6 @@ ${f.thankYou}
 ${f.sincerely}
 
 ${name || f.namePlaceholderLetter}
-
-${email || f.emailPlaceholderLetter}
 
 ${date}`;
 }

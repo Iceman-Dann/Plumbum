@@ -169,24 +169,26 @@
   align-items: center;
   gap: 8px;
   background: transparent;
-  border: 1.5px solid var(--color-text);
-  color: var(--color-text);
+  border: 1px solid #000000;
+  color: #000000;
   padding: 10px 20px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
-  letter-spacing: 0.02em;
-  transition: background 0.18s ease, color 0.18s ease;
+  letter-spacing: 0.05em;
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
 }
 
 .shareBtn:hover {
-  background: var(--color-text);
+  background: #000000;
   color: #FFFFFF;
 }
 
 .shareBtn.copied {
-  background: #1F4D32;
-  border-color: #1F4D32;
+  background: #000000;
+  border-color: #000000;
   color: #FFFFFF;
 }
 

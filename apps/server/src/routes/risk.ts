@@ -144,13 +144,13 @@ interface RiskResult {
 }
 
 const FIPS_TO_STATE: Record<string, string> = {
-  "01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE",
-  "11":"DC","12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA",
-  "20":"KS","21":"KY","22":"LA","23":"ME","24":"MD","25":"MA","26":"MI","27":"MN",
-  "28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM",
-  "36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI",
-  "45":"SC","46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA",
-  "54":"WV","55":"WI","56":"WY","72":"PR",
+  "01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA", "08": "CO", "09": "CT", "10": "DE",
+  "11": "DC", "12": "FL", "13": "GA", "15": "HI", "16": "ID", "17": "IL", "18": "IN", "19": "IA",
+  "20": "KS", "21": "KY", "22": "LA", "23": "ME", "24": "MD", "25": "MA", "26": "MI", "27": "MN",
+  "28": "MS", "29": "MO", "30": "MT", "31": "NE", "32": "NV", "33": "NH", "34": "NJ", "35": "NM",
+  "36": "NY", "37": "NC", "38": "ND", "39": "OH", "40": "OK", "41": "OR", "42": "PA", "44": "RI",
+  "45": "SC", "46": "SD", "47": "TN", "48": "TX", "49": "UT", "50": "VT", "51": "VA", "53": "WA",
+  "54": "WV", "55": "WI", "56": "WY", "72": "PR",
 };
 
 const waterSystemCache = new Map<string, { pwsid: string; pwsName: string }>();
@@ -170,7 +170,7 @@ for (const [fips, val] of Object.entries(PREWARMED_PWS)) {
 
 async function lookupWaterSystem(fips: string): Promise<{ pwsid: string; pwsName: string }> {
   if (!fips || fips.length < 11) return { pwsid: "", pwsName: "" };
-  
+
   const cached = waterSystemCache.get(fips);
   if (cached) return cached;
 
@@ -183,7 +183,7 @@ async function lookupWaterSystem(fips: string): Promise<{ pwsid: string; pwsName
     const apiUrl = `https://data.epa.gov/efservice/WATER_SYSTEM/PRIMACY_AGENCY_CODE/${stateAbbr}/COUNTY_SERVED/${countyFips}/JSON`;
     const res = await fetch(apiUrl, {
       signal: AbortSignal.timeout(6_000),
-      headers: { "User-Agent": "Plumbum/1.0 (lead-risk; contact@plumbum.io)" },
+      headers: { "User-Agent": "Plumbum/1.0 (lead-risk; contact@plumbummap.org)" },
     });
     if (!res.ok) {
       const empty = { pwsid: "", pwsName: "" };
@@ -279,7 +279,7 @@ const CA_PROVINCES = [
   " on", " qc", " bc", " ab", " mb", " sk", " ns", " nb", " nl", " pe", " nt", " nu", " yt",
   "toronto", "montreal", "vancouver", "ottawa", "calgary", "edmonton",
   "winnipeg", "quebec city", "hamilton", "kitchener", "london, on",
-  "halifax", "victoria", "saskatoon", "regina", "st. john\'s", "mississauga",
+  "halifax", "victoria", "saskatoon", "regina", "st. john's", "mississauga",
   "brampton", "surrey", "laval", "markham",
 ];
 
@@ -293,7 +293,7 @@ function trimDisplayName(displayName: string, country: "us" | "ca"): string {
   const parts = displayName.split(",").map((s) => s.trim()).filter(Boolean);
   const cleaned = parts.filter((p) => !/^[A-Z0-9]\d[A-Z]/i.test(p) && !/^\d{4,}/.test(p));
   const withoutCountry = cleaned.filter((p) => !/^(United States|Canada|US|CA)$/i.test(p));
-  
+
   if (withoutCountry.length <= 3) {
     const base = withoutCountry.join(", ");
     return country === "ca" ? `${base}, Canada` : base;
@@ -343,7 +343,7 @@ async function geocodeNominatim(
 
   try {
     const res = await fetch(url.toString(), {
-      headers: { "User-Agent": "Plumbum/1.0 (lead-pipe-risk; contact@plumbum.app)" },
+      headers: { "User-Agent": "Plumbum/1.0 (lead-pipe-risk; contact@plumbummap.org)" },
       signal: AbortSignal.timeout(8_000),
     });
     if (!res.ok) return null;
@@ -396,6 +396,53 @@ async function tractFromCoordinates(lat: number, lng: number): Promise<string | 
 }
 
 // ---------------------------------------------------------------------------
+// Stage 2c — Google Geocoding API (Highly accurate, resolves typos & POIs)
+// ---------------------------------------------------------------------------
+
+async function geocodeGoogle(
+  address: string
+): Promise<{ lat: number; lng: number; displayName: string; country: "us" | "ca" } | null> {
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_CIVIC_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const url = new URL("https://maps.googleapis.com/maps/api/geocode/json");
+    url.searchParams.set("address", address);
+    url.searchParams.set("key", apiKey);
+
+    const res = await fetch(url.toString(), { signal: AbortSignal.timeout(6_000) });
+    if (!res.ok) return null;
+
+    const data = await res.json() as {
+      results?: Array<{
+        formatted_address: string;
+        geometry: { location: { lat: number; lng: number } };
+        address_components: Array<{ types: string[]; short_name: string }>;
+      }>;
+      status: string;
+    };
+
+    if (data.status !== "OK" || !data.results || data.results.length === 0) return null;
+
+    const result = data.results[0];
+    let country: "us" | "ca" = "us";
+    const countryComp = result.address_components.find(c => c.types.includes("country"));
+    if (countryComp?.short_name === "CA") {
+      country = "ca";
+    }
+
+    return {
+      lat: result.geometry.location.lat,
+      lng: result.geometry.location.lng,
+      displayName: result.formatted_address,
+      country,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Unified geocoder — runs the waterfall, caches results
 // ---------------------------------------------------------------------------
 
@@ -406,7 +453,7 @@ export async function geocodeAddress(address: string): Promise<GeocodedResult | 
 
   const forceCountry: "ca" | "us" | undefined = looksLikeCanada(address) ? "ca" : undefined;
 
-  // 1. Try Census Geocoder first for US addresses (it is extremely accurate)
+  // 1. Try Census Geocoder first for US addresses (free and extremely accurate for standard addresses)
   if (forceCountry !== "ca") {
     const census = await geocodeCensus(address);
     if (census) {
@@ -415,7 +462,43 @@ export async function geocodeAddress(address: string): Promise<GeocodedResult | 
     }
   }
 
-  // 2. Fallback to Nominatim (OpenStreetMap) if Census fails or it looks like Canada
+  // 2. Try Google Geocoding API if available (resolves landmarks, typos, and specific POIs like schools)
+  const google = await geocodeGoogle(address);
+  if (google) {
+    if (google.country === "ca") {
+      const result: GeocodedResult = {
+        geocodedAddress: google.displayName,
+        lat: google.lat,
+        lng: google.lng,
+        censusTract: "",
+        stateFips: "",
+        countyFips: "",
+        tractCode: "",
+        country: "ca",
+      };
+      cacheSet(cacheKey, result);
+      return result;
+    }
+
+    const geoid = await tractFromCoordinates(google.lat, google.lng);
+    if (geoid) {
+      const parsed = parseGeoid(geoid);
+      const result: GeocodedResult = {
+        geocodedAddress: google.displayName,
+        lat: google.lat,
+        lng: google.lng,
+        censusTract: geoid,
+        stateFips: parsed.stateFips,
+        countyFips: parsed.countyFips,
+        tractCode: parsed.tractCode,
+        country: "us",
+      };
+      cacheSet(cacheKey, result);
+      return result;
+    }
+  }
+
+  // 3. Fallback to Nominatim (OpenStreetMap) if both Census and Google are unavailable/fail
   const nom = await geocodeNominatim(address, forceCountry);
   if (nom) {
     if (nom.country === "ca") {
@@ -451,7 +534,7 @@ export async function geocodeAddress(address: string): Promise<GeocodedResult | 
     }
   }
 
-  // 3. Fallback: try ZIP Code if present
+  // 4. Fallback: try ZIP Code if present
   if (forceCountry !== "ca") {
     const zipMatch = address.match(/\b\d{5}\b/);
     if (zipMatch) {
@@ -478,7 +561,7 @@ export async function geocodeAddress(address: string): Promise<GeocodedResult | 
     }
   }
 
-  // 4. Fallback: try City/State if comma-separated (progressive)
+  // 5. Fallback: try City/State if comma-separated (progressive)
   const commaParts = address.split(",").map((s) => s.trim()).filter(Boolean);
   if (commaParts.length >= 2) {
     for (let i = 1; i < commaParts.length; i++) {
@@ -520,7 +603,7 @@ export async function geocodeAddress(address: string): Promise<GeocodedResult | 
     }
   }
 
-  // 5. Fallback: space-based progressive fallback (dropping words from the left)
+  // 6. Fallback: space-based progressive fallback (dropping words from the left)
   const words = address.split(/\s+/).filter(Boolean);
   if (words.length >= 3) {
     const maxDrop = Math.min(3, words.length - 2);
@@ -639,7 +722,8 @@ router.get("/risk", async (req, res) => {
   const hasSupabase = !!process.env.SUPABASE_URL && !!process.env.SUPABASE_KEY;
 
   if ((hasDb || hasSupabase) && isLoggable) {
-    const city = geocoded.geocodedAddress.split(",")[0]?.trim() ?? null;
+    const parts = geocoded.geocodedAddress.split(",").map(p => p.trim());
+    const city = parts.length >= 4 ? parts[1] : parts[0] || null;
     void (async () => {
       try {
         if (hasDb) {

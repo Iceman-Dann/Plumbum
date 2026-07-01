@@ -5,8 +5,8 @@ import crypto from "crypto";
 
 const router = Router();
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "";
-const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "contact@plumbum.io";
-const BASE_URL = process.env.VITE_PUBLIC_URL || "https://plumbum.io";
+const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "contact@plumbummap.org";
+const BASE_URL = process.env.VITE_PUBLIC_URL || "https://plumbummap.org";
 
 if (SENDGRID_API_KEY) {
   sgMail.setApiKey(SENDGRID_API_KEY);

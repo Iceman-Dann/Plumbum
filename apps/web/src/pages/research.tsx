@@ -70,7 +70,7 @@ Federal Safe Drinking Water audits indicate that ${selectedCity.name} has only d
 
 Our research indicates a strong geographic correlation between historic redlining lines (A-D ratings) and current lead pipe exposures. Local water quality records show ${selectedCity.violations} major lead monitoring violations in the last 10 years.
 
-We have launched an interactive geospatial portal at plumbum.io/research that maps these municipal budget gaps and redlining correlations. I would be glad to share the raw datasets, local contact logs, and outline how this funding delay impacts local neighborhoods.
+We have launched an interactive geospatial portal at plumbummap.org/research that maps these municipal budget gaps and redlining correlations. I would be glad to share the raw datasets, local contact logs, and outline how this funding delay impacts local neighborhoods.
 
 Sincerely,
 
@@ -287,12 +287,6 @@ Civic Water Advocate, Plumbum Coalition`;
                   <button type="button" onClick={handleCopyPitch} className={styles.copyBtn}>
                     {copiedPitch ? "✓ Copied" : "Copy to Clipboard"}
                   </button>
-                  <a
-                    href={`mailto:?subject=${encodeURIComponent(`Water quality story idea - BLL and pre-1986 lines in ${selectedCity.name}`)}&body=${encodeURIComponent(pitchText)}`}
-                    className={styles.mailtoBtn}
-                  >
-                    Open in Email Client ✉
-                  </a>
                 </div>
               </div>
             )}

@@ -9,7 +9,7 @@
 .hero {
   min-height: 90vh;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
   gap: 64px;
   max-width: 1200px;
@@ -98,117 +98,36 @@
   color: var(--color-gray);
 }
 
-/* ── Preview card ──────────────────────────────────────────── */
+/* ── Large extension popup screenshot ──────────────────── */
 
 .heroPreview {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-}
-
-.previewCard {
-  position: relative;
   width: 100%;
-  max-width: 380px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+}
+
+.screenshotCardLarge {
+  width: 100%;
+  max-width: 380px; /* Highly visible large layout */
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.10);
-}
-
-.previewPhoto {
-  height: 220px;
-  background: linear-gradient(135deg, #D9CFC3 0%, #B8AFA8 100%);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 16px;
-}
-
-.previewPhotoGradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%);
-}
-
-.previewAddress {
-  position: relative;
-  font-size: 12px;
-  color: #fff;
-  font-weight: 500;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-
-.previewPrice {
-  position: relative;
-  font-family: var(--font-serif);
-  font-size: 26px;
-  font-weight: 700;
-  color: #fff;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-
-/* Badge floating on the photo */
-.previewBadge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 160px;
-  height: 48px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.16);
+  border: 1px solid var(--color-border);
   background: #fff;
-  border: 1.5px solid #A63D2F;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  gap: 10px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  animation: badgePulse 2.5s ease-in-out infinite;
-  z-index: 10;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
 }
 
-@keyframes badgePulse {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(166,61,47,0.12), 0 2px 12px rgba(0,0,0,0.15); }
-  50% { box-shadow: 0 0 0 5px rgba(166,61,47,0.28), 0 4px 24px rgba(166,61,47,0.18); }
+.screenshotCardLarge:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.24);
 }
 
-.previewBadgePulse {
-  display: none; /* handled by animation above */
-}
-
-.previewBadgePb {
-  font-family: var(--font-serif);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-accent);
-}
-
-.previewBadgeDivider {
-  width: 1px;
-  height: 28px;
-  background: var(--color-border);
-  flex-shrink: 0;
-}
-
-.previewBadgeRight {
-  flex: 1;
-}
-
-.previewBadgeScore {
-  font-size: 20px;
-  font-weight: 700;
-  color: #A63D2F;
-  line-height: 1;
-}
-
-.previewBadgeLevel {
-  font-size: 9px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-top: 2px;
+.screenshotImg {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .previewCaption {
@@ -324,6 +243,9 @@
   border: 1px solid var(--color-border);
   border-radius: 6px;
   transition: border-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .featureCard:hover {
@@ -332,8 +254,11 @@
 }
 
 .featureIcon {
-  font-size: 28px;
-  margin-bottom: 12px;
+  font-size: 24px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .featureTitle {

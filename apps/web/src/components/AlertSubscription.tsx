@@ -8,17 +8,13 @@ interface AlertSubscriptionProps {
 }
 
 export default function AlertSubscription({ address, score, censusTract }: AlertSubscriptionProps) {
-  const [email, setEmail] = useState("");
+  const [email] = useState("subscriber@plumbum.local");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.trim()) {
-      setError("Please enter a valid email address.");
-      return;
-    }
 
     setLoading(true);
     setError(null);
@@ -67,24 +63,10 @@ export default function AlertSubscription({ address, score, censusTract }: Alert
               <div className={styles.sectionMeta}>Community Monitoring</div>
               <h2 className={styles.heading}>Get alerts for your address</h2>
               <p className={styles.body}>
-                We monitor EPA violation databases and municipal water reports. If new lead or copper violations are filed for your water district, we'll email you immediately.
+                We monitor EPA violation databases and municipal water reports. If new lead or copper violations are filed for your water district, we'll notify you as soon as they are published.
               </p>
 
               <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.inputGroup}>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (error) setError(null);
-                    }}
-                    placeholder="Enter your email address"
-                    className={styles.input}
-                    disabled={loading}
-                    required
-                  />
-                </div>
                 <button type="submit" className={styles.submitBtn} disabled={loading}>
                   {loading && <span className={styles.spinner} />}
                   Subscribe to Alerts
@@ -94,7 +76,7 @@ export default function AlertSubscription({ address, score, censusTract }: Alert
               {error && <p className={styles.errorText}>{error}</p>}
 
               <p className={styles.footerText}>
-                We will never sell your email or spam you. Unsubscribe with 1-click at any time.
+                We will not share your details or send promotional messages.
               </p>
             </>
           )}

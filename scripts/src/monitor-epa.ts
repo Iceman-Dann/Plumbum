@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, "../../.env") });
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "";
-const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "contact@plumbum.io";
+const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "contact@plumbummap.org";
 const BASE_URL = process.env.API_URL || "http://localhost:8080";
 
 if (SENDGRID_API_KEY) {

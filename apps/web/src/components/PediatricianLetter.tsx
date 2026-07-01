@@ -51,7 +51,7 @@ ${salutation}
 
 I am writing to formally request a blood lead level (BLL) test for ${isPregnant ? "myself at my next prenatal visit" : `my child, ${childStr}, date of birth ${dobStr}`}.
 
-Our home address is ${address}, which has been assessed by Plumbum (plumbum.io), an open-source public health research tool built on data from the EPA Safe Drinking Water Information System and the US Census American Community Survey. This address received a lead pipe risk score of ${score} out of 100, classified as ${riskLevel}.
+Our home address is ${address}, which has been assessed by Plumbum (plumbummap.org), an open-source public health research tool built on data from the EPA Safe Drinking Water Information System and the US Census American Community Survey. This address received a lead pipe risk score of ${score} out of 100, classified as ${riskLevel}.
 
 The assessment identified the following contributing risk factors:
 
@@ -68,7 +68,7 @@ Sincerely,
 ${parentStr}
 
 —————————————————————————————
-Plumbum methodology and data sources: plumbum.io/methodology
+Plumbum methodology and data sources: plumbummap.org/methodology
 Plumbum arXiv preprint: arxiv.org/abs/plumbum`;
 }
 
@@ -238,7 +238,7 @@ export default function PediatricianLetter({
         {/* Finder link */}
         <div className={styles.findDoctorRow}>
           <a
-            href={isPregnant ? "https://www.acog.org/womens-health/find-an-ob-gyn" : "https://www.healthychildren.org/English/tips-tools/find-pediatrician"}
+            href={isPregnant ? "https://www.acog.org/womens-health/find-an-ob-gyn" : "https://www.healthychildren.org/English/tips-tools/find-pediatrician/Pages/Pediatrician-Referral-Service.aspx"}
             target="_blank"
             rel="noreferrer"
             className={styles.findDoctorLink}

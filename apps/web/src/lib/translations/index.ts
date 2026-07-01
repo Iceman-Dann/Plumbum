@@ -16,6 +16,9 @@ export const STORAGE_KEY = "plumbum-lang";
 
 export function getStoredLanguage(): Language {
   if (typeof window === "undefined") return "en";
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored === "es" ? "es" : "en";
+  const stored = localStorage.getItem(STORAGE_KEY) as Language | null;
+  if (stored && ["en", "es"].includes(stored)) {
+    return stored;
+  }
+  return "en";
 }

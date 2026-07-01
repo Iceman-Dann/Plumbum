@@ -118,7 +118,7 @@ export async function generatePediatricianLetter(data: PediatricianLetterData): 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   setColor(doc, [180, 170, 160]);
-  doc.text("Lead Pipe Risk Assessment Platform · plumbum.io", M + 22, 11.5);
+  doc.text("Lead Pipe Risk Assessment Platform · plumbummap.org", M + 22, 11.5);
 
   // ── Document type label ────────────────────────────────────────────────────
   let y = 30;
@@ -154,7 +154,7 @@ export async function generatePediatricianLetter(data: PediatricianLetterData): 
   doc.text(para1Lines, M, y);
   y += para1Lines.length * 5.5 + 4;
 
-  const para2 = `Our home address is ${data.address}, which has been assessed by Plumbum (plumbum.io), an open-source public health research tool built on data from the EPA Safe Drinking Water Information System and the US Census American Community Survey. This address received a lead pipe risk score of ${data.score} out of 100, classified as ${data.riskLevel}.`;
+  const para2 = `Our home address is ${data.address}, which has been assessed by Plumbum (plumbummap.org), an open-source public health research tool built on data from the EPA Safe Drinking Water Information System and the US Census American Community Survey. This address received a lead pipe risk score of ${data.score} out of 100, classified as ${data.riskLevel}.`;
   const para2Lines = doc.splitTextToSize(para2, CW);
   doc.text(para2Lines, M, y);
   y += para2Lines.length * 5.5 + 4;
@@ -237,7 +237,7 @@ export async function generatePediatricianLetter(data: PediatricianLetterData): 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   setColor(doc, CHARCOAL);
-  doc.text("Plumbum methodology and data sources: plumbum.io/methodology", M + 4, y + 11);
+  doc.text("Plumbum methodology and data sources: plumbummap.org/methodology", M + 4, y + 11);
   doc.text("Plumbum arXiv preprint: arxiv.org/abs/plumbum", M + 4, y + 17);
 
   // ── Footer ─────────────────────────────────────────────────────────────────

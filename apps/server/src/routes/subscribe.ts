@@ -39,7 +39,7 @@ async function lookupPwsid(fips: string): Promise<string> {
     const apiUrl = `https://data.epa.gov/efservice/WATER_SYSTEM/PRIMACY_AGENCY_CODE/${stateAbbr}/COUNTY_SERVED/${countyFips}/JSON`;
     const res = await fetch(apiUrl, {
       signal: AbortSignal.timeout(6_000),
-      headers: { "User-Agent": "Plumbum/1.0 (lead-risk; contact@plumbum.io)" },
+      headers: { "User-Agent": "Plumbum/1.0 (lead-risk; contact@plumbummap.org)" },
     });
     if (!res.ok) return "";
     const data = await res.json() as Array<{ PWSID?: string; PWS_ACTIVITY_CODE?: string }>;

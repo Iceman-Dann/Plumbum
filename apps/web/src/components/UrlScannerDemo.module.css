@@ -1,0 +1,283 @@
+/* ── UrlScannerDemo Styles ──────────────────────────────────────────────────── */
+
+.container {
+  margin-top: 12px;
+  background: var(--color-surface, #0e1520);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.3s;
+}
+
+.clickable {
+  cursor: pointer;
+  border-color: rgba(255,255,255,0.13);
+}
+
+.clickable:hover {
+  border-color: rgba(166, 61, 47, 0.4);
+}
+
+/* Browser bar */
+.browserBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+
+.browserDots {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: block;
+  opacity: 0.7;
+}
+
+.urlBar {
+  flex: 1;
+  font-size: 11px;
+  font-family: "Inter", monospace;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.urlPlaceholder {
+  color: var(--color-text-muted, #6b7f96);
+  font-style: italic;
+}
+
+.urlText {
+  color: var(--color-text, #e8edf3);
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 0.7s step-end infinite;
+  color: var(--color-accent, #a63d2f);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Scanning */
+.scanSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scanStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-text-muted, #8899aa);
+}
+
+.scanSpinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-top-color: var(--color-accent, #a63d2f);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.scanDone {
+  color: #27ae60;
+  font-weight: 700;
+}
+
+.scanPct {
+  font-weight: 700;
+  color: var(--color-accent, #a63d2f);
+  font-variant-numeric: tabular-nums;
+}
+
+.progressBg {
+  height: 5px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #a63d2f, #e74c3c);
+  border-radius: 999px;
+  transition: width 0.1s linear;
+}
+
+.progressComplete {
+  transition: width 0.4s ease;
+  background: linear-gradient(90deg, #27ae60, #2ecc71);
+}
+
+/* Dossier */
+.dossier {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(166, 61, 47, 0.25);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transform: translateY(16px);
+  opacity: 0;
+  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.dossierVisible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.dossierHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dossierTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text, #e8edf3);
+}
+
+.dossierDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e74c3c;
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.6; }
+}
+
+.dossierBadge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.12);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.dossierScore {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dossierScoreNum {
+  font-size: 30px;
+  font-weight: 800;
+  color: #e74c3c;
+  line-height: 1;
+}
+
+.dossierScoreLabel {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+}
+
+.dossierScoreBar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dossierScoreFill {
+  height: 100%;
+  width: 84%;
+  background: linear-gradient(90deg, #e67e22, #e74c3c);
+  border-radius: 999px;
+  animation: fillBar 0.6s ease-out 0.1s both;
+}
+
+@keyframes fillBar {
+  from { width: 0; }
+  to { width: 84%; }
+}
+
+.dossierFactors {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dossierFactor {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: factorIn 0.3s ease both;
+}
+
+@keyframes factorIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.dossierFactorLabel {
+  font-size: 11px;
+  color: var(--color-text-muted, #8899aa);
+}
+
+.dossierFactorValue {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.fvHigh { color: #e74c3c; }
+.fvMed  { color: #f39c12; }
+
+.dossierAddress {
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 6px;
+}
+
+/* Idle hint */
+.idleHint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-text-muted, #6b7f96);
+  padding: 4px;
+}

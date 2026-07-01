@@ -10,7 +10,7 @@
   --color-border: #E0DDD6;
   
   --font-sans: 'Inter', sans-serif;
-  --font-serif: var(--font-sans);
+  --font-serif: 'Playfair Display', Georgia, serif;
 }
 
 * {
@@ -28,7 +28,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6, .font-serif {
-  font-family: var(--font-sans) !important;
+  font-family: var(--font-serif);
 }
 
 a {
@@ -97,3 +97,58 @@ ul, ol {
 .plumbum-tooltip::before {
   display: none !important;
 }
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: 99999;
+  background-color: var(--color-accent, #a63d2f);
+  color: #fff;
+  padding: 8px 16px;
+  font-weight: 700;
+  border: 1px solid var(--color-border);
+}
+
+.skip-link:focus {
+  top: 10px;
+  left: 10px;
+}
+
+/* Floating mobile sticky CTA button */
+.mobile-sticky-search-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background-color: var(--color-accent, #a63d2f);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 14px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.mobile-sticky-search-btn:hover {
+  background-color: #8d3326;
+}
+
+@media (min-width: 768px) {
+  .mobile-sticky-search-btn {
+    display: none;
+  }
+}
+
+

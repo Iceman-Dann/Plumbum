@@ -27,7 +27,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "FETCH_RISK") {
     const { address } = message;
-    fetch(`https://plumbum.io/api/v1/risk?address=${encodeURIComponent(address)}`)
+    fetch(`https://plumbummap.org/api/v1/risk?address=${encodeURIComponent(address)}`)
       .then((r) => r.json())
       .then((data) => sendResponse({ ok: true, data }))
       .catch((err) => sendResponse({ ok: false, error: err.message }));

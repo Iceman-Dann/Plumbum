@@ -31,7 +31,7 @@ function getScoreColor(score: number): string {
 }
 
 export default function Accountability() {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
 
   // URL Query Parameters pre-fill
   const searchParams = new URLSearchParams(window.location.search);
@@ -106,11 +106,11 @@ export default function Accountability() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!address.trim()) {
-      setFormError("Address is required.");
+      setFormError(t.accountability.addressRequired);
       return;
     }
     if (!noticeDate) {
-      setFormError("Notice date is required.");
+      setFormError(t.accountability.dateRequired);
       return;
     }
 
@@ -159,24 +159,24 @@ export default function Accountability() {
   const getResponsePill = (status: string) => {
     switch (status) {
       case "AGREED_TO_TEST":
-        return <span className={`${styles.pill} ${styles.pillAgreed}`}>Agreed to Test</span>;
+        return <span className={`${styles.pill} ${styles.pillAgreed}`}>{t.accountability.optionAgreed}</span>;
       case "TESTED_NEGATIVE":
-        return <span className={`${styles.pill} ${styles.pillNeg}`}>Tested - Negative</span>;
+        return <span className={`${styles.pill} ${styles.pillNeg}`}>{t.accountability.optionTestedNeg}</span>;
       case "TESTED_POSITIVE":
-        return <span className={`${styles.pill} ${styles.pillPos}`}>Tested - Lead Exceedance</span>;
+        return <span className={`${styles.pill} ${styles.pillPos}`}>{t.accountability.optionTestedPos}</span>;
       case "REFUSED":
-        return <span className={`${styles.pill} ${styles.pillRefused}`}>Refused to Act</span>;
+        return <span className={`${styles.pill} ${styles.pillRefused}`}>{t.accountability.optionRefused}</span>;
       case "NO_RESPONSE":
-        return <span className={`${styles.pill} ${styles.pillNoResp}`}>No Response</span>;
+        return <span className={`${styles.pill} ${styles.pillNoResp}`}>{t.accountability.optionNoResponse}</span>;
       default:
-        return <span className={`${styles.pill} ${styles.pillPending}`}>Pending response</span>;
+        return <span className={`${styles.pill} ${styles.pillPending}`}>{t.accountability.optionPending}</span>;
     }
   };
 
   const formatNoticeDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr + "T00:00:00");
-      return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+      return date.toLocaleDateString(lang === "es" ? "es-ES" : "en-US", { year: "numeric", month: "short", day: "numeric" });
     } catch {
       return dateStr;
     }
@@ -188,11 +188,11 @@ export default function Accountability() {
       <section className={styles.hero}>
         <div className={styles.container}>
           <div className={styles.heroContent}>
-            <div className={styles.labelTop}>Public Registry</div>
+            <div className={styles.labelTop}>{t.accountability.heroLabel}</div>
             <div className={styles.heroRule}></div>
-            <h1 className={styles.headline}>Landlord Accountability</h1>
+            <h1 className={styles.headline}>{t.accountability.heroHeadline}</h1>
             <p className={styles.heroBody}>
-              Renters have a right to safe water. This public database tracks which landlords have been formally notified of lead pipe risk — and how they responded.
+              {t.accountability.heroBody}
             </p>
           </div>
         </div>
@@ -205,19 +205,19 @@ export default function Accountability() {
           <section className={styles.statsStrip}>
             <div className={styles.statCard}>
               <div className={styles.statNum}>{stats.total}</div>
-              <p className={styles.statLabel}>Notices Filed</p>
+              <p className={styles.statLabel}>{t.accountability.statNoticesFiled}</p>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statNum}>{stats.noResponsePct}%</div>
-              <p className={styles.statLabel}>No Response</p>
+              <p className={styles.statLabel}>{t.accountability.statNoResponse}</p>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statNum}>{stats.agreedToTestPct}%</div>
-              <p className={styles.statLabel}>Agreed to Test</p>
+              <p className={styles.statLabel}>{t.accountability.statAgreedToTest}</p>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statNum}>{stats.refusedPct}%</div>
-              <p className={styles.statLabel}>Refused to Act</p>
+              <p className={styles.statLabel}>{t.accountability.statRefusedToAct}</p>
             </div>
           </section>
 
@@ -226,23 +226,25 @@ export default function Accountability() {
             {formSuccess ? (
               <div className={styles.successOverlay}>
                 <span className={styles.successIcon}>✓</span>
-                <h3 className={styles.panelTitle}>Notice Logged Successfully</h3>
+                <h3 className={styles.panelTitle}>{t.accountability.formSuccessTitle}</h3>
                 <p style={{ fontSize: "14px", color: "var(--color-gray)", lineHeight: "1.5" }}>
-                  Thank you. Property <strong>{formSuccessData?.address}</strong> has been logged with a geocoded risk score of <strong>{formSuccessData?.score}/100</strong>.
+                  {t.accountability.formSuccessDesc
+                    .replace("{address}", formSuccessData?.address || "")
+                    .replace("{score}", String(formSuccessData?.score || 0))}
                 </p>
                 <button
                   onClick={() => setFormSuccess(false)}
                   className={styles.successResetBtn}
                 >
-                  File another report
+                  {t.accountability.formSuccessBtn}
                 </button>
               </div>
             ) : (
               <>
-                <h3 className={styles.panelTitle}>Report a landlord notification</h3>
+                <h3 className={styles.panelTitle}>{t.accountability.formTitle}</h3>
                 <form onSubmit={handleFormSubmit} className={styles.form}>
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Property Address *</label>
+                    <label className={styles.label}>{t.accountability.labelPropertyAddress}</label>
                     <input
                       type="text"
                       value={address}
@@ -250,7 +252,7 @@ export default function Accountability() {
                         setAddress(e.target.value);
                         if (formError) setFormError(null);
                       }}
-                      placeholder="e.g. 124 Vassar Ave, Newark, NJ"
+                      placeholder={t.accountability.placeholderAddress}
                       className={styles.input}
                       disabled={formLoading}
                       required
@@ -258,31 +260,31 @@ export default function Accountability() {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Landlord or Management Company Name</label>
+                    <label className={styles.label}>{t.accountability.labelLandlordName}</label>
                     <input
                       type="text"
                       value={landlordName}
                       onChange={(e) => setLandlordName(e.target.value)}
-                      placeholder="e.g. John Doe Properties, LLC"
+                      placeholder={t.accountability.placeholderLandlord}
                       className={styles.input}
                       disabled={formLoading}
                     />
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Management Company (Optional)</label>
+                    <label className={styles.label}>{t.accountability.labelMgmtCompany}</label>
                     <input
                       type="text"
                       value={mgmtCompany}
                       onChange={(e) => setMgmtCompany(e.target.value)}
-                      placeholder="e.g. Apex Property Management"
+                      placeholder={t.accountability.placeholderMgmt}
                       className={styles.input}
                       disabled={formLoading}
                     />
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Date You Notified Them *</label>
+                    <label className={styles.label}>{t.accountability.labelDateNotified}</label>
                     <input
                       type="date"
                       value={noticeDate}
@@ -294,29 +296,29 @@ export default function Accountability() {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Their Response So Far *</label>
+                    <label className={styles.label}>{t.accountability.labelResponseSoFar}</label>
                     <select
                       value={response}
                       onChange={(e) => setResponse(e.target.value)}
                       className={styles.select}
                       disabled={formLoading}
                     >
-                      <option value="PENDING">Pending response</option>
-                      <option value="AGREED_TO_TEST">Agreed to test</option>
-                      <option value="TESTED_NEGATIVE">Tested — came back negative</option>
-                      <option value="TESTED_POSITIVE">Tested — came back positive</option>
-                      <option value="REFUSED">Refused to act</option>
-                      <option value="NO_RESPONSE">No response after 30 days</option>
+                      <option value="PENDING">{t.accountability.optionPending}</option>
+                      <option value="AGREED_TO_TEST">{t.accountability.optionAgreed}</option>
+                      <option value="TESTED_NEGATIVE">{t.accountability.optionTestedNeg}</option>
+                      <option value="TESTED_POSITIVE">{t.accountability.optionTestedPos}</option>
+                      <option value="REFUSED">{t.accountability.optionRefused}</option>
+                      <option value="NO_RESPONSE">{t.accountability.optionNoResponse}</option>
                     </select>
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>Additional Notes</label>
+                    <label className={styles.label}>{t.accountability.labelAdditionalNotes}</label>
                     <textarea
                       maxLength={280}
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Brief details about interactions or responses (max 280 characters)..."
+                      placeholder={t.accountability.placeholderNotes}
                       className={styles.textarea}
                       disabled={formLoading}
                     />
@@ -331,11 +333,11 @@ export default function Accountability() {
                     disabled={formLoading}
                   >
                     {formLoading && <span className={styles.spinner} />}
-                    Submit Notice Log
+                    {t.accountability.btnSubmitNotice}
                   </button>
 
                   <p className={styles.formDisclaimer}>
-                    Submissions are anonymous. Property addresses are hashed before validation. We do not store your identity.
+                    {t.accountability.formDisclaimer}
                   </p>
                 </form>
               </>
@@ -349,7 +351,7 @@ export default function Accountability() {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by address, city, or landlord name..."
+                placeholder={t.accountability.searchPlaceholder}
                 className={styles.searchInput}
               />
             </div>
@@ -361,7 +363,7 @@ export default function Accountability() {
                   className={`${styles.tabBtn} ${activeTab === "all" ? styles.tabBtnActive : ""}`}
                   onClick={() => setActiveTab("all")}
                 >
-                  All Notices
+                  {t.accountability.tabAllNotices}
                 </button>
                 <button
                   type="button"
@@ -369,7 +371,7 @@ export default function Accountability() {
                   onClick={() => setActiveTab("unresolved")}
                   title="Urgent unresolved high risk database"
                 >
-                  Unresolved High-Risk
+                  {t.accountability.tabUnresolvedHighRisk}
                 </button>
               </div>
 
@@ -379,8 +381,8 @@ export default function Accountability() {
                   onChange={(e) => setSortBy(e.target.value as "recent" | "urgent")}
                   className={styles.sortSelect}
                 >
-                  <option value="recent">Most Recent</option>
-                  <option value="urgent">Most Urgent</option>
+                  <option value="recent">{t.accountability.sortRecent}</option>
+                  <option value="urgent">{t.accountability.sortUrgent}</option>
                 </select>
               )}
             </div>
@@ -395,11 +397,21 @@ export default function Accountability() {
                 <div className={styles.emptyState}>
                   {activeTab === "unresolved" ? (
                     <>
-                      <h4 style={{ margin: "0 0 8px 0", color: "var(--color-text)", fontWeight: 600 }}>No unresolved high-risk violations found</h4>
-                      <p style={{ margin: 0, fontSize: "13px" }}>Properties with score &gt;80 and no response or refusal past 30 days will show here.</p>
+                      <h4 style={{ margin: "0 0 8px 0", color: "var(--color-text)", fontWeight: 600 }}>
+                        {lang === "es" ? "No se encontraron violaciones de alto riesgo sin resolver" : "No unresolved high-risk violations found"}
+                      </h4>
+                      <p style={{ margin: 0, fontSize: "13px" }}>
+                        {lang === "es"
+                          ? "Las propiedades con puntaje >80 y sin respuesta o rechazo después de 30 días se mostrarán aquí."
+                          : "Properties with score >80 and no response or refusal past 30 days will show here."}
+                      </p>
                     </>
                   ) : (
-                    <p style={{ margin: 0 }}>No landlord reports matched your criteria.</p>
+                    <p style={{ margin: 0 }}>
+                      {lang === "es"
+                        ? "No hay avisos públicos registrados todavía. Cuando alguien envíe un aviso, aparecerá aquí."
+                        : "There are no public notices recorded yet. When someone submits one, it will appear here."}
+                    </p>
                   )}
                 </div>
               ) : (
@@ -411,29 +423,29 @@ export default function Accountability() {
                         className={styles.scoreBadge}
                         style={{ backgroundColor: getScoreColor(n.risk_score) }}
                       >
-                        Score: {n.risk_score}/100
+                        {t.result.riskScore}: {n.risk_score}/100
                       </span>
                     </div>
 
                     <div className={styles.cardDetails}>
                       {n.landlord_name && (
                         <div className={styles.detailItem}>
-                          <span className={styles.detailLabel}>Landlord</span>
+                          <span className={styles.detailLabel}>{t.home.hubColLandlord}</span>
                           <span className={styles.detailValue}>{n.landlord_name}</span>
                         </div>
                       )}
                       {n.management_company && (
                         <div className={styles.detailItem}>
-                          <span className={styles.detailLabel}>Management Co</span>
+                          <span className={styles.detailLabel}>{t.home.hubColLandlord} (Co)</span>
                           <span className={styles.detailValue}>{n.management_company}</span>
                         </div>
                       )}
                       <div className={styles.detailItem}>
-                        <span className={styles.detailLabel}>Date Filed</span>
+                        <span className={styles.detailLabel}>{t.accountability.noticeDateLabel}</span>
                         <span className={styles.detailValue}>{formatNoticeDate(n.notice_date)}</span>
                       </div>
                       <div className={styles.detailItem}>
-                        <span className={styles.detailLabel}>Status</span>
+                        <span className={styles.detailLabel}>{t.home.hubColStatus}</span>
                         <div style={{ marginTop: "2px" }}>
                           {getResponsePill(n.landlord_response)}
                         </div>

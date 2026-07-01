@@ -114,7 +114,7 @@ router.post("/accountability", async (req, res) => {
     const anonId = submitter_anonymous_id || crypto.randomUUID();
 
     // 6. Write or update notice in DB
-    const insertId = insertOrUpdateNotice({
+    const insertId = await insertOrUpdateNotice({
       property_address: obfuscated,
       property_address_hash: addressHash,
       risk_score: score,
@@ -136,7 +136,7 @@ router.post("/accountability", async (req, res) => {
 
 // ── GET /api/accountability ───────────────────────────────────────────────────
 
-router.get("/accountability", (req, res) => {
+router.get("/accountability", async (req, res) => {
   const { query, sort, tab } = req.query as {
     query?: string;
     sort?: string;
@@ -148,13 +148,20 @@ router.get("/accountability", (req, res) => {
     
     let list;
     if (tab === "unresolved") {
-      list = getUrgentNotices();
+      list = await getUrgentNotices();
     } else {
-      list = searchNotices(query || "", sortBy);
+      list = await searchNotices(query || "", sortBy);
     }
 
     res.json({ list });
-  } catch (err) {
+  } catch (err: any) {
+    // If the table doesn't exist yet in Supabase, return empty list gracefully
+    const msg = String(err?.message || err);
+    if (msg.includes("does not exist") || msg.includes("relation") || msg.includes("42P01")) {
+      req.log.warn("landlord_notices table not yet created — returning empty list");
+      res.json({ list: [] });
+      return;
+    }
     req.log.error({ err }, "Failed to search landlord notices");
     res.status(500).json({ error: "Failed to retrieve database entries." });
   }
@@ -162,9 +169,9 @@ router.get("/accountability", (req, res) => {
 
 // ── GET /api/accountability/stats ─────────────────────────────────────────────
 
-router.get("/accountability/stats", (_req, res) => {
+router.get("/accountability/stats", async (_req, res) => {
   try {
-    const stats = getAccountabilityStats();
+    const stats = await getAccountabilityStats();
     res.json(stats);
   } catch (err) {
     res.status(500).json({ error: "Failed to load database stats." });

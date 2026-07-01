@@ -8,6 +8,7 @@
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
+  --color-text: hsl(var(--foreground));
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -82,7 +83,7 @@
   --destructive-foreground: 0 0% 100%;
 
   --app-font-sans: 'Inter', sans-serif;
-  --app-font-serif: 'Inter', sans-serif;
+  --app-font-serif: 'Playfair Display', Georgia, serif;
   --app-font-mono: Menlo, monospace;
   --radius: 6px;
   

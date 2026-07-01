@@ -6,7 +6,7 @@
   <title>Plumbum — Lead Pipe Risk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
@@ -16,15 +16,25 @@
         <img src="icons/icon48.png" alt="Logo" class="logo-img" style="width: 18px; height: 18px;" />
         <span class="logo-text">Plumbum</span>
       </div>
-      <button class="settings-toggle" id="settingsToggle" title="Settings">⚙</button>
+      <div class="header-controls">
+        <button class="settings-toggle" id="settingsToggle" title="Settings">⚙</button>
+        <button class="close-btn" id="closeBtn" title="Close">✕</button>
+      </div>
     </header>
 
     <!-- Settings panel (hidden by default) -->
     <div class="settings-panel" id="settingsPanel" hidden>
       <div class="settings-title">Extension Settings</div>
+      
+      <!-- Core Settings -->
       <label class="toggle-row">
-        <span class="toggle-label">Show badge on listings</span>
+        <span class="toggle-label">Show inline badge on pages</span>
         <input type="checkbox" id="badgeEnabled" class="toggle-input" checked />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+      <label class="toggle-row">
+        <span class="toggle-label">Auto-inject detailed card</span>
+        <input type="checkbox" id="cardAutoInject" class="toggle-input" checked />
         <span class="toggle-track"><span class="toggle-thumb"></span></span>
       </label>
       <label class="toggle-row">
@@ -39,17 +49,51 @@
           <option value="es">Español</option>
         </select>
       </label>
+
+      <!-- Advanced / Secondary Settings -->
+      <div class="settings-subtitle">Score Threshold</div>
+      <div style="display: flex; align-items: center; gap: 10px; margin: 8px 0 4px;">
+        <input type="range" id="scoreThreshold" min="0" max="100" value="0" style="flex: 1; accent-color: var(--accent); cursor: pointer;" />
+        <span id="thresholdVal" style="font-size: 11px; font-weight: 700; min-width: 24px; text-align: right;">0</span>
+      </div>
+
+      <div class="settings-subtitle">Supported Sites</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; user-select: none;">
+          <input type="checkbox" id="siteZillow" checked style="accent-color: var(--accent);" /> Zillow
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; user-select: none;">
+          <input type="checkbox" id="siteRedfin" checked style="accent-color: var(--accent);" /> Redfin
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; user-select: none;">
+          <input type="checkbox" id="siteTrulia" checked style="accent-color: var(--accent);" /> Trulia
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; user-select: none;">
+          <input type="checkbox" id="siteRealtor" checked style="accent-color: var(--accent);" /> Realtor.com
+        </label>
+      </div>
     </div>
 
     <!-- Listing view: shown when on a real estate page -->
     <div id="listingView" hidden>
       <div class="address-label" id="addressLabel"></div>
 
-      <div class="score-row" id="scoreRow">
-        <div class="score-num" id="scoreNum">—</div>
-        <div class="score-right">
+      <!-- Circular Gauge / Score Section -->
+      <div class="score-section">
+        <div class="score-gauge-container">
+          <svg class="score-ring" width="100" height="100" viewBox="0 0 120 120">
+            <circle class="score-ring-bg" cx="60" cy="60" r="50" fill="none" stroke="var(--border)" stroke-width="8" />
+            <circle class="score-ring-progress" id="scoreRingProgress" cx="60" cy="60" r="50" fill="none" stroke="var(--accent)" stroke-width="8" 
+                    stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round"
+                    transform="rotate(-90 60 60)" />
+            <text class="score-ring-text" id="scoreRingText" x="60" y="56" text-anchor="middle" dominant-baseline="central" font-size="28" font-weight="800" fill="var(--text)">—</text>
+            <text class="score-ring-label" x="60" y="82" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="700" fill="var(--gray)" letter-spacing="0.08em">SCORE</text>
+          </svg>
+        </div>
+        <div class="score-info-pane">
           <div class="score-level" id="scoreLevel">—</div>
-          <div class="score-denom">/ 100</div>
+          <div class="score-source-credit">Based on EPA, HUD, Census data. Score reflects combined risk factors below.</div>
+          <div class="score-freshness" id="scoreFreshness">Checking freshness...</div>
         </div>
       </div>
 
@@ -78,10 +122,22 @@
       <div id="searchResult" class="search-result" hidden></div>
     </div>
 
-    <!-- Loading state -->
+    <!-- Loading state (shimmer skeleton) -->
     <div id="loadingView" hidden>
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Checking lead risk…</div>
+      <div class="skeleton-pane">
+        <div class="skeleton-line skeleton-title shimmer"></div>
+        <div class="skeleton-circle-row">
+          <div class="skeleton-circle shimmer"></div>
+          <div class="skeleton-circle-meta">
+            <div class="skeleton-line skeleton-meta-1 shimmer"></div>
+            <div class="skeleton-line skeleton-meta-2 shimmer"></div>
+          </div>
+        </div>
+        <div class="skeleton-line skeleton-factor shimmer"></div>
+        <div class="skeleton-line skeleton-factor shimmer"></div>
+        <div class="skeleton-line skeleton-factor shimmer"></div>
+        <div class="skeleton-btn shimmer"></div>
+      </div>
     </div>
 
     <!-- Error state -->
@@ -91,9 +147,9 @@
     </div>
 
     <footer class="popup-footer">
-      <a href="https://plumbum.io" target="_blank">plumbum.io</a>
+      <a href="https://plumbummap.org" target="_blank">plumbummap.org</a>
       ·
-      <a href="https://plumbum.io/methodology" target="_blank">Methodology</a>
+      <a href="https://plumbummap.org/methodology" target="_blank">Methodology</a>
     </footer>
   </div>
   <script src="popup.js"></script>

@@ -1,11 +1,6 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
-import {
-  translationsByLang,
-  getStoredLanguage,
-  STORAGE_KEY,
-  type Language,
-  type Translations,
-} from "@/lib/translations";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { translationsByLang, getStoredLanguage, STORAGE_KEY } from "@/lib/translations";
+import type { Language, Translations } from "@/lib/translations/types";
 
 interface LanguageContextValue {
   lang: Language;
@@ -13,21 +8,22 @@ interface LanguageContextValue {
   setLang: (lang: Language) => void;
 }
 
-const LanguageContext = createContext<LanguageContextValue | null>(null);
+const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Language>(getStoredLanguage);
+  const [lang, setLangState] = useState<Language>(() => getStoredLanguage());
 
+  const setLang = (newLang: Language) => {
+    setLangState(newLang);
+    localStorage.setItem(STORAGE_KEY, newLang);
+  };
+
+  // Synchronize html lang attribute
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, lang);
-    document.documentElement.lang = lang;
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
   }, [lang]);
 
-  const setLang = useCallback((next: Language) => {
-    setLangState(next);
-  }, []);
-
-  const t = translationsByLang[lang];
+  const t = translationsByLang[lang] || translationsByLang["en"];
 
   return (
     <LanguageContext.Provider value={{ lang, t, setLang }}>
@@ -36,10 +32,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useTranslation() {
-  const ctx = useContext(LanguageContext);
-  if (!ctx) {
-    throw new Error("useTranslation must be used within LanguageProvider");
+export function useTranslation(): LanguageContextValue {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error("useTranslation must be used within a LanguageProvider");
   }
-  return ctx;
+  return context;
 }

@@ -149,10 +149,10 @@
   font-size: 11px;
   line-height: 1.55;
   padding: 10px 12px;
-  border-radius: 0;
+  border-radius: 4px;
   z-index: 50;
   pointer-events: none;
-  /* No box-shadow per design spec */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 /* Small inline "?" character */
@@ -1082,6 +1082,7 @@
 .ccrCard {
   background: #FAF8F5;
   border: 1px solid var(--color-border);
+  border-radius: 6px;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -1322,3 +1323,88 @@
   padding: 32px 24px;
   background: #FFFFFF;
 }
+
+/* ── Uncertainty / Confidence range styles ── */
+.rangeIndicator {
+  margin-top: 12px;
+  border-top: 1px dashed var(--color-border);
+  padding-top: 8px;
+}
+
+.rangeMeta {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #4B5563;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.rangeValue {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: #1F2937;
+  margin-top: 2px;
+}
+
+.rangeMargin {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  color: #6B7280;
+  font-style: italic;
+  margin-top: 1px;
+}
+
+/* ── Data Limitation Callout Notice ── */
+.dataLimitationNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background-color: #F4EFE8;
+  border-left: 3px solid var(--color-accent, #a63d2f);
+  padding: 12px 16px;
+  margin-top: 16px;
+  max-width: 600px;
+}
+
+.limitationIcon {
+  color: var(--color-accent, #a63d2f);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.limitationText {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.5;
+  color: #5C5651;
+  margin: 0;
+}
+
+/* ── Government Sourcing Notice ── */
+.sourcingNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background-color: var(--color-surface, #EDEAE3);
+  padding: 10px 14px;
+  margin-top: -30px;
+  margin-bottom: 24px;
+  max-width: 600px;
+  border-left: 2px solid var(--color-gray, #888880);
+}
+
+.sourcingIcon {
+  color: #4B5563;
+}
+
+.sourcingText {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1.45;
+  color: #4B5563;
+  margin: 0;
+}
+
+

@@ -13,6 +13,7 @@ import SearchBar from "../components/SearchBar";
 import { useGetNeighborhood, getGetNeighborhoodQueryKey } from "@workspace/api-client-react";
 import type { Translations } from "@/lib/translations/types";
 import { usePregnancyMode } from "@/hooks/usePregnancyMode";
+import { AlertTriangle, Info, CheckCircle, Check } from "lucide-react";
 
 const LeafletMap = React.lazy(() => import("@/components/map/leaflet-map"));
 const NeighborhoodMap = React.lazy(() => import("@/components/map/neighborhood-map"));
@@ -66,8 +67,8 @@ const severityColors: Record<Severity, string> = {
 function ListingRiskBanner({ score }: { score: number }) {
   if (score >= 60) {
     return (
-      <div className={`${styles.riskBanner} ${styles.riskBannerHigh}`}>
-        <span className={styles.riskBannerIcon}>⚠️</span>
+      <div className={`${styles.riskBanner} ${styles.riskBannerHigh}`} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <AlertTriangle size={18} className={styles.riskBannerIcon} style={{ color: "#F59E0B" }} />
         <span className={styles.riskBannerText}>
           This listing is in a <strong>HIGH RISK</strong> lead pipe area. This should be disclosed and investigated before purchase.
         </span>
@@ -76,8 +77,8 @@ function ListingRiskBanner({ score }: { score: number }) {
   }
   if (score >= 35) {
     return (
-      <div className={`${styles.riskBanner} ${styles.riskBannerModerate}`}>
-        <span className={styles.riskBannerIcon}>⚡</span>
+      <div className={`${styles.riskBanner} ${styles.riskBannerModerate}`} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <Info size={18} className={styles.riskBannerIcon} style={{ color: "#F59E0B" }} />
         <span className={styles.riskBannerText}>
           This listing shows <strong>MODERATE</strong> lead pipe risk. Request water testing records from the seller before closing.
         </span>
@@ -85,8 +86,8 @@ function ListingRiskBanner({ score }: { score: number }) {
     );
   }
   return (
-    <div className={`${styles.riskBanner} ${styles.riskBannerLow}`}>
-      <span className={styles.riskBannerIcon}>✓</span>
+    <div className={`${styles.riskBanner} ${styles.riskBannerLow}`} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <CheckCircle size={18} className={styles.riskBannerIcon} style={{ color: "#10B981" }} />
       <span className={styles.riskBannerText}>
         This listing shows <strong>LOW</strong> lead pipe risk based on available data. Standard precautions apply.
       </span>
@@ -127,7 +128,7 @@ function ShareRealtorButton({ data, pageUrl }: { data: RealEstateResult; pageUrl
       onClick={handleCopy}
       type="button"
     >
-      {copied ? "✓ Copied to clipboard!" : "📋 Share with your realtor"}
+      {copied ? "[ COPIED TO CLIPBOARD ]" : "[ FORWARD REALTOR DOSSIER ]"}
     </button>
   );
 }
@@ -315,7 +316,7 @@ export default function ListingResult() {
       @page {
         margin: 2cm;
         @bottom-center {
-          content: "Plumbum · plumbum.io · Data: EPA, Census, USGS";
+          content: "Plumbum · plumbummap.org · Data: EPA, Census, USGS";
           font-family: 'Inter', sans-serif;
           font-size: 11px;
           color: #000000;
@@ -429,28 +430,37 @@ export default function ListingResult() {
 
           {/* ── Standard alert banner ── */}
           {score >= 60 ? (
-            <div className={styles.alertBanner} style={{ background: score >= 80 ? "#7A1F0F" : "#A63D2F" }}>
-              <span>
-                {score >= 80
-                  ? t.result.alertVeryHigh
-                  : t.result.alertHigh}{" "}
-                <a href="https://www.epa.gov/ground-water-and-drinking-water/get-your-water-tested" target="_blank" rel="noreferrer" className={styles.alertLink}>
-                  {t.result.getFreeTestKit}
-                </a>
+            <div className={styles.alertBanner} style={{ background: score >= 80 ? "#1E293B" : "#334155" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+                <AlertTriangle size={16} style={{ color: "#F59E0B", flexShrink: 0 }} />
+                <span>
+                  {score >= 80
+                    ? t.result.alertVeryHigh
+                    : t.result.alertHigh}{" "}
+                  <a href="https://www.epa.gov/sites/default/files/2015-11/documents/2005_09_14_faq_fs_homewatertesting.pdf" target="_blank" rel="noreferrer" className={styles.alertLink}>
+                    {t.result.getFreeTestKit}
+                  </a>
+                </span>
               </span>
             </div>
           ) : score >= 40 ? (
-            <div className={styles.alertBanner} style={{ background: "#C07A2A" }}>
-              <span>
-                {t.result.alertModerate}{" "}
-                <a href="https://www.epa.gov/ground-water-and-drinking-water/get-your-water-tested" target="_blank" rel="noreferrer" className={styles.alertLink}>
-                  {t.result.learnMore}
-                </a>
+            <div className={styles.alertBanner} style={{ background: "#475569" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+                <Info size={16} style={{ color: "#F59E0B", flexShrink: 0 }} />
+                <span>
+                  {t.result.alertModerate}{" "}
+                  <a href="https://www.epa.gov/sites/default/files/2015-11/documents/2005_09_14_faq_fs_homewatertesting.pdf" target="_blank" rel="noreferrer" className={styles.alertLink}>
+                    {t.result.learnMore}
+                  </a>
+                </span>
               </span>
             </div>
           ) : (
-            <div className={styles.alertBanner} style={{ background: "#4A7C59" }}>
-              <span>{t.result.alertLow}</span>
+            <div className={styles.alertBanner} style={{ background: "#334D3D" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+                <CheckCircle size={16} style={{ color: "#10B981", flexShrink: 0 }} />
+                <span>{t.result.alertLow}</span>
+              </span>
             </div>
           )}
 
@@ -470,7 +480,9 @@ export default function ListingResult() {
                   type="button"
                 >
                   {copiedAddress ? (
-                    <span className={styles.copiedText}>✓ Copied</span>
+                    <span className={styles.copiedText} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      <Check size={12} /> Copied
+                    </span>
                   ) : (
                     <svg className={styles.copyAddressIcon} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
@@ -503,26 +515,7 @@ export default function ListingResult() {
                     </div>
                   </div>
 
-                  {/* Renter vs. Owner Split Path */}
-                  <div className={styles.housingToggleTop}>
-                    <span className={styles.housingToggleLabel}>Are you a renter or owner of this property?</span>
-                    <div className={styles.housingRadioGroup}>
-                      <button
-                        type="button"
-                        className={`${styles.housingBtn} ${housingStatus === "rent" ? styles.housingBtnActive : ""}`}
-                        onClick={() => setHousingStatus("rent")}
-                      >
-                        I Rent This Property
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.housingBtn} ${housingStatus === "own" ? styles.housingBtnActive : ""}`}
-                        onClick={() => setHousingStatus("own")}
-                      >
-                        I Own This Property
-                      </button>
-                    </div>
-                  </div>
+
                 </div>
 
                 {/* CCR Translation Card (Auto-Summarized via Groq) */}
@@ -556,7 +549,7 @@ export default function ListingResult() {
                     </div>
                   )}
                   <div className={styles.ccrFooter}>
-                    <a href={(listing as any).ccr_url || "https://www.epa.gov/ccr"} target="_blank" rel="noreferrer" className={styles.ccrLink}>
+                    <a href="https://www.epa.gov/ccr/understanding-your-annual-water-quality-report" target="_blank" rel="noreferrer" className={styles.ccrLink}>
                       View official PDF report ↗
                     </a>
                   </div>
@@ -693,18 +686,12 @@ export default function ListingResult() {
           <section className={styles.takeActionSection} style={{ borderTop: "1px solid #D6CFC8", paddingTop: "32px", marginTop: "32px" }}>
             <div className={styles.container}>
               <div className={styles.takeActionMeta}>Take Action</div>
-              <h2 className={styles.takeActionHeadline}>Protect yourself and your family</h2>
+              <h2 className={styles.takeActionHeadline}>What you can do</h2>
 
-              {housingStatus === null ? (
-                <div className={styles.actionNudge} style={{ border: "1px dashed #D6CFC8", padding: "24px", textAlign: "center" }}>
-                  Please select your renter or owner status at the top of the page to generate customizable action letters.
-                </div>
-              ) : (
-                <>
+              <>
                   {/* Flat tab menu */}
                   <div className={styles.tabMenu} role="tablist">
-                    {housingStatus === "own" && (
-                      <button
+                    <button
                         id="tab-subsidy"
                         role="tab"
                         aria-selected={activeTab === "subsidy"}
@@ -715,7 +702,6 @@ export default function ListingResult() {
                       >
                         Find Local Subsidy
                       </button>
-                    )}
                     <button
                       id="tab-free-filter"
                       role="tab"
@@ -727,8 +713,7 @@ export default function ListingResult() {
                     >
                       Claim Free Filter
                     </button>
-                    {housingStatus === "rent" && (
-                      <button
+                    <button
                         id="tab-landlord"
                         role="tab"
                         aria-selected={activeTab === "landlord"}
@@ -739,7 +724,6 @@ export default function ListingResult() {
                       >
                         Notify Landlord
                       </button>
-                    )}
                     <button
                       id="tab-peds"
                       role="tab"
@@ -754,8 +738,7 @@ export default function ListingResult() {
                   </div>
 
                   {/* Landlord tab panel */}
-                  {housingStatus === "rent" && (
-                    <div
+                  <div
                       id="tabpanel-landlord"
                       role="tabpanel"
                       aria-labelledby="tab-landlord"
@@ -774,7 +757,6 @@ export default function ListingResult() {
                         censusTract={listing.census_tract ?? ""}
                       />
                     </div>
-                  )}
 
                   {/* Claim Free Filter tab panel */}
                   <div
@@ -790,8 +772,7 @@ export default function ListingResult() {
                   </div>
 
                   {/* Find Local Subsidy tab panel */}
-                  {housingStatus === "own" && (
-                    <div
+                  <div
                       id="tabpanel-subsidy"
                       role="tabpanel"
                       aria-labelledby="tab-subsidy"
@@ -841,8 +822,7 @@ export default function ListingResult() {
                           </div>
                         </div>
                       </section>
-                    </div>
-                  )}
+                  </div>
 
                   {/* Pediatrician tab panel */}
                   <div
@@ -866,8 +846,7 @@ export default function ListingResult() {
                       isPregnant={isPregnant}
                     />
                   </div>
-                </>
-              )}
+              </>
             </div>
           </section>
 
@@ -895,11 +874,7 @@ export default function ListingResult() {
             </div>
           </section>
 
-          <AlertSubscription
-            address={listing.geocoded_address || listing.extracted_address}
-            score={score}
-            censusTract={listing.census_tract ?? ""}
-          />
+
 
           <footer className={styles.footer}>
             <div className={styles.container}>

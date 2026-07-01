@@ -179,6 +179,14 @@ function Form({ fips, onSuccess }: { fips: string; onSuccess: (cat: ResultCatego
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["test-results", fips] });
+      queryClient.invalidateQueries({ queryKey: ["test-results-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["test-results-recent"] });
+      try {
+        localStorage.setItem("plumbum:test-submitted", String(Date.now()));
+        window.dispatchEvent(new Event("plumbum:test-submitted"));
+      } catch {
+        // ignore storage failures in private or restricted contexts
+      }
       onSuccess(data.result_category);
     },
   });
@@ -309,7 +317,7 @@ export default function WaterTestForm({ fips }: { fips: string }) {
               <p className={styles.confBody}>
                 Your result has been added to the community dataset for census tract {fips}. This data
                 is publicly available for research at{" "}
-                <a href="/data" style={{ color: "#A63D2F" }}>plumbum.io/data</a>.
+                <a href="/data" style={{ color: "#A63D2F" }}>plumbummap.org/data</a>.
               </p>
               <div
                 className={styles.confCategory}

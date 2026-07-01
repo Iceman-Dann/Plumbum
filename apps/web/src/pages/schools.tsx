@@ -45,8 +45,11 @@ async function geocodeAddress(address: string): Promise<{ lat: number; lng: numb
   return { lat: data.lat, lng: data.lng };
 }
 
-async function fetchSchools(lat: number, lng: number): Promise<SchoolResult[]> {
-  const res = await fetch(`/api/schools?lat=${lat}&lng=${lng}`);
+async function fetchSchools(lat: number, lng: number, query?: string): Promise<SchoolResult[]> {
+  const url = query
+    ? `/api/schools?lat=${lat}&lng=${lng}&query=${encodeURIComponent(query)}`
+    : `/api/schools?lat=${lat}&lng=${lng}`;
+  const res = await fetch(url);
   if (!res.ok) {
     const body = await res.json() as { error?: string };
     throw new Error(body.error ?? "Failed to fetch schools");
@@ -122,7 +125,7 @@ function SchoolCard({
       <div className={styles.cardFooter}>
         <span className={styles.typePill}>{school.institution_type}</span>
         <Link
-          href={`/result?address=${encodeURIComponent(school.address)}`}
+          href={`/result?address=${encodeURIComponent(school.address)}&context=school&school=${encodeURIComponent(school.name)}`}
           className={styles.viewLink}
         >
           {t.schools.viewFullReport}
@@ -146,8 +149,8 @@ export default function Schools() {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
   const { data: schools, isLoading: schoolsLoading, error: schoolsError } = useQuery<SchoolResult[], Error>({
-    queryKey: ["schools", coords?.lat, coords?.lng],
-    queryFn: () => fetchSchools(coords!.lat, coords!.lng),
+    queryKey: ["schools", coords?.lat, coords?.lng, query],
+    queryFn: () => fetchSchools(coords!.lat, coords!.lng, query),
     enabled: !!coords,
   });
 

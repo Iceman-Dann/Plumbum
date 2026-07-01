@@ -160,9 +160,6 @@ export default function RepresentativeSection({
   };
 
   const selectedRep = reps?.[selectedIdx] ?? null;
-  const mailtoHref = selectedRep?.email
-    ? `mailto:${selectedRep.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`
-    : "#";
 
   return (
     <section className={styles.section}>
@@ -245,10 +242,6 @@ export default function RepresentativeSection({
                     ? <a href={rep.url} target="_blank" rel="noreferrer" className={styles.repLink} onClick={e => e.stopPropagation()}>{t.representative.officialWebsite}</a>
                     : null
                   }
-                  {rep.email
-                    ? <div className={styles.repLink} style={{ marginTop: 4 }}>{rep.email}</div>
-                    : <div className={styles.noEmail}>{t.representative.noPublicEmail}</div>
-                  }
                 </button>
               ))}
             </div>
@@ -299,18 +292,7 @@ export default function RepresentativeSection({
               <button className={styles.copyBtn} onClick={handleCopy}>
                 {copyState === "copied" ? t.representative.copied : t.representative.copyEmail}
               </button>
-              <a
-                href={mailtoHref}
-                className={`${styles.mailBtn}${!selectedRep?.email ? ` ${styles.noEmailDisabled}` : ""}`}
-                title={!selectedRep?.email ? t.representative.noEmailTooltip : undefined}
-              >
-                {t.representative.openMailClient}
-              </a>
             </div>
-
-            {!selectedRep?.email && (
-              <p className={styles.noRepSelected}>{t.representative.noEmailNote}</p>
-            )}
           </>
         )}
       </div>

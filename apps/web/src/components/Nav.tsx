@@ -1,45 +1,63 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "wouter";
-import { useTranslation } from "@/hooks/useTranslation";
 import styles from "../styles/nav.module.css";
+import { useTranslation } from "@/hooks/useTranslation";
 
-const RESOURCES_LINKS = [
-  { href: "/methodology", label: "Methodology", testId: "nav-methodology" },
-  { href: "/api-docs", label: "API Docs", testId: "nav-api-docs" },
-  { href: "/extension", label: "Extension", testId: "nav-extension" },
-  { href: "https://github.com", label: "GitHub", testId: "nav-github", external: true },
+const LANGUAGES = [
+  { code: "en", label: "English", flag: "🇺🇸" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
 ];
 
 export default function Nav() {
-  const { t, lang, setLang } = useTranslation();
   const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [translateOpen, setTranslateOpen] = useState(false);
+  const { lang: activeLang, t, setLang } = useTranslation();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const translateRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
+  const resourceLinks = [
+    { href: "/data", label: "Data", testId: "nav-data" },
+    { href: "/methodology", label: t.nav.methodology || "Methodology", testId: "nav-methodology" },
+    { href: "/api-docs", label: t.nav.api || "API Docs", testId: "nav-api-docs" },
+    { href: "/extension", label: t.nav.extension || "Extension", testId: "nav-extension" },
+    { href: "https://github.com/Iceman-Dann/Plumbum", label: t.nav.github || "GitHub ↗", testId: "nav-github", external: true },
+  ];
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setResourcesOpen(false);
+      }
+      if (translateRef.current && !translateRef.current.contains(e.target as Node)) {
+        setTranslateOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleSelectLanguage = (code: string) => {
+    setTranslateOpen(false);
+    setLang(code);
+  };
+
+  const currentLang = LANGUAGES.find((l) => l.code === activeLang) ?? LANGUAGES[0];
+
   return (
     <nav className={styles.nav}>
       <div className={styles.container}>
-        {/* Logo — far left */}
+        {/* Logo */}
         <Link href="/" className={styles.logoLink} data-testid="nav-logo">
-          <img src="/logo.png" alt={t.nav.logoAlt} className={styles.logoImg} />
+          <img src="/logo.png" alt={t.nav.logoAlt || "Plumbum Logo"} className={styles.logoImg} />
           <span className={styles.logoText}>Plumbum</span>
         </Link>
 
-        {/* Core consumer links + Resources dropdown */}
+        {/* Nav links */}
         <div className={styles.links}>
-          <Link href="/schools" className={styles.link}>{t.nav.schools}</Link>
-          <Link href="/hotspots" className={styles.link}>{t.nav.hotspots}</Link>
-          <Link href="/accountability" className={styles.link}>Civic Tools</Link>
+          <Link href="/schools" className={styles.link}>{t.nav.schools || "Schools"}</Link>
+          <Link href="/hotspots" className={styles.link}>{t.nav.hotspots || "Hotspots"}</Link>
+          <Link href="/accountability" className={styles.link}>{t.nav.takeAction || "Take Action"}</Link>
 
           {/* Resources dropdown */}
           <div className={styles.resourcesWrapper} ref={dropdownRef}>
@@ -50,12 +68,12 @@ export default function Nav() {
               aria-haspopup="true"
               aria-expanded={resourcesOpen}
             >
-              Safety Kits {resourcesOpen ? "↑" : "↓"}
+              {t.nav.resources || "Resources"} {resourcesOpen ? "↑" : "↓"}
             </button>
 
             {resourcesOpen && (
               <div className={styles.dropdown}>
-                {RESOURCES_LINKS.map((item) =>
+                {resourceLinks.map((item) =>
                   item.external ? (
                     <a
                       key={item.href}
@@ -84,26 +102,68 @@ export default function Nav() {
             )}
           </div>
 
-          {/* Language toggle — far right */}
-          <span className={styles.langToggle}>
+          {/* Language / Translate dropdown */}
+          <div className={styles.resourcesWrapper} ref={translateRef}>
             <button
               type="button"
-              className={`${styles.langBtn} ${lang === "en" ? styles.langBtnActive : ""}`}
-              onClick={() => setLang("en")}
-              aria-label="English"
+              className={`${styles.link} ${styles.resourcesBtn}`}
+              onClick={() => setTranslateOpen((o) => !o)}
+              aria-haspopup="true"
+              aria-expanded={translateOpen}
+              aria-label="Select language"
             >
-              {t.nav.langEn}
+              {currentLang.flag} {currentLang.label} {translateOpen ? "↑" : "↓"}
             </button>
-            <span className={styles.langDivider} aria-hidden="true" />
+
+            {translateOpen && (
+              <div className={styles.dropdown} style={{ minWidth: 200, right: 0, left: "auto" }}>
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    type="button"
+                    className={styles.dropdownItem}
+                    onClick={() => handleSelectLanguage(lang.code)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      width: "100%",
+                      background: lang.code === activeLang ? "var(--color-surface)" : "transparent",
+                      fontWeight: lang.code === activeLang ? 600 : 400,
+                      border: "none",
+                      cursor: "pointer",
+                      textAlign: "left",
+                    }}
+                  >
+                    <span style={{ fontSize: 18 }}>{lang.flag}</span>
+                    <span>{lang.label}</span>
+                    {lang.code === activeLang && (
+                      <span style={{ marginLeft: "auto", color: "var(--color-accent)", fontSize: 12 }}>✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Get My Free Report CTA */}
+          <Link href="/">
             <button
               type="button"
-              className={`${styles.langBtn} ${lang === "es" ? styles.langBtnActive : ""}`}
-              onClick={() => setLang("es")}
-              aria-label="Español"
+              className={styles.reportBtn}
+              onClick={() => {
+                setTimeout(() => {
+                  const inputEl = document.querySelector('input[placeholder*="address"], input[type="text"]') as HTMLInputElement;
+                  if (inputEl) {
+                    inputEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                    inputEl.focus();
+                  }
+                }, 100);
+              }}
             >
-              {t.nav.langEs}
+              {t.nav.getReport || "Get My Free Report"}
             </button>
-          </span>
+          </Link>
         </div>
       </div>
     </nav>

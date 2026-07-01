@@ -399,6 +399,9 @@ importers:
       '@sendgrid/mail':
         specifier: ^8.1.6
         version: 8.1.6
+      '@workspace/db':
+        specifier: workspace:*
+        version: link:../packages/db
       better-sqlite3:
         specifier: ^11.8.0
         version: 11.10.0

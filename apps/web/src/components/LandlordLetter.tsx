@@ -44,7 +44,7 @@ FORMAL LEGAL NOTICE: IMPAIRMENT OF POTABLE WATER & IMPLIED WARRANTY OF HABITABIL
 
 I am writing as the tenant of ${address} to formally notify you that the drinking water at this property is at severe risk of toxic lead contamination.
 
-According to a risk analysis conducted by Plumbum (plumbum.io), this address received a lead pipe risk score of ${score} out of 100, which is classified as a ${riskLevel.toUpperCase()} RISK profile.
+According to a risk analysis conducted by Plumbum (plumbummap.org), this address received a lead pipe risk score of ${score} out of 100, which is classified as a ${riskLevel.toUpperCase()} RISK profile.
 
 The assessment identified the following contributing risk factors:
 
@@ -66,7 +66,7 @@ Sincerely,
 ${tenantStr}
 
 —————————————————————————————
-Plumbum Landlord Accountability Portal: plumbum.io/accountability`;
+Plumbum Landlord Accountability Portal: plumbummap.org/accountability`;
 }
 
 export default function LandlordLetter({

@@ -43,7 +43,7 @@ function InjectPinStyle() {
 
 const pulseIcon = L.divIcon({
   className: "",
-  html: `<div class="plumbum-pin"><div class="plumbum-pin-dot"></div></div>`,
+  html: `<div class="plumbum-pin"><div class="plumbum-pin-dot"></div><div class="plumbum-pin-ring"></div></div>`,
   iconSize: [24, 24],
   iconAnchor: [12, 12],
 });

@@ -1,0 +1,306 @@
+/* ── VideoExplainerAnimation Styles ────────────────────────────────────────── */
+
+.container {
+  background: var(--color-surface, #0e1520);
+  border: 1px solid var(--color-border, #1e2a3a);
+  border-radius: 16px;
+  padding: 24px 20px 16px;
+  width: 100%;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(166, 61, 47, 0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Phase pills */
+.phasePills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px 4px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.pillActive {
+  background: rgba(166, 61, 47, 0.18);
+  border-color: rgba(166, 61, 47, 0.4);
+}
+
+.pillNumber {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted, #8899aa);
+}
+
+.pillActive .pillNumber {
+  background: var(--color-accent, #a63d2f);
+  color: white;
+}
+
+.pillLabel {
+  font-size: 11px;
+  color: var(--color-text-muted, #8899aa);
+  font-weight: 500;
+}
+
+.pillActive .pillLabel {
+  color: var(--color-text, #e8edf3);
+}
+
+/* Panels */
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  position: absolute;
+  inset: 70px 20px 40px;
+}
+
+.panelVisible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.panelHidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+/* ── Phase 1 ─────────────────────────────────── */
+.mockInput {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-family: "Inter", monospace;
+  color: var(--color-text, #e8edf3);
+  min-height: 48px;
+}
+
+.searchIcon {
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.typedText {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 0.8s step-end infinite;
+  color: var(--color-accent, #a63d2f);
+  font-weight: 300;
+  margin-left: 1px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.mockSubtext {
+  font-size: 12px;
+  color: var(--color-text-muted, #6b7f96);
+  text-align: center;
+}
+
+/* ── Phase 2 ─────────────────────────────────── */
+.scanLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-muted, #8899aa);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.scanDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #27ae60;
+  animation: pulseScanDot 1s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulseScanDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.scanBars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scanRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scanRowLabel {
+  font-size: 11px;
+  color: var(--color-text-muted, #8899aa);
+  width: 140px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scanBarBg {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.scanBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #a63d2f, #e74c3c);
+  transition: width 0.15s ease;
+}
+
+.scanCheck {
+  font-size: 12px;
+  color: #27ae60;
+  width: 14px;
+  flex-shrink: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* ── Phase 3 ─────────────────────────────────── */
+.gaugeWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.gaugeSvg {
+  width: 160px;
+  height: 90px;
+}
+
+.gaugeScore {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  margin-top: -8px;
+  transition: color 0.3s ease;
+  font-variant-numeric: tabular-nums;
+}
+
+.gaugeLabel {
+  font-size: 13px;
+  color: var(--color-text-muted, #6b7f96);
+}
+
+.riskBadge {
+  align-self: center;
+  padding: 5px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  animation: badgeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badgeIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.riskHigh { background: rgba(198, 40, 40, 0.2); color: #ef5350; border: 1px solid rgba(198, 40, 40, 0.4); }
+.riskMed  { background: rgba(230, 126, 34, 0.2); color: #f39c12; border: 1px solid rgba(230, 126, 34, 0.4); }
+.riskLow  { background: rgba(39, 174, 96, 0.2);  color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.4); }
+
+.factorList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.factorRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.factorLabel {
+  font-size: 11px;
+  color: var(--color-text-muted, #8899aa);
+}
+
+.factorWeight {
+  font-size: 11px;
+  color: #e74c3c;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Footer ──────────────────────────────────── */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-text-muted, #6b7f96);
+  margin-top: auto;
+}
+
+.footerDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #27ae60;
+}
