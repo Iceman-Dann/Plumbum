@@ -102,7 +102,14 @@ You type an address. Plumbum pulls from **EPA enforcement records, US Census hou
 
 ### The Risk Score Engine
 
-Plumbum's scoring model is a **Gradient Boosted Machine (GBM)** trained on multiple public datasets. When you search an address, the server:
+Plumbum's scoring model is a **Gradient Boosted Machine (GBM)** trained on multiple public datasets, weighted roughly as follows:
+
+- **Pipe material era** (pre/post the 1986 lead ban) — the single strongest signal
+- **Home build year & housing stock age**
+- **Utility violation history** (EPA SDWIS)
+- **Neighborhood redlining correlation** (HUD)
+
+When you search an address, the server:
 
 1. **Geocodes** the address using Census TIGER/Line data
 2. **Fetches Census tract** demographics and housing vintage (build year distribution)
@@ -111,17 +118,7 @@ Plumbum's scoring model is a **Gradient Boosted Machine (GBM)** trained on multi
 5. **Queries USGS** for regional geological corrosivity (naturally soft/acidic water accelerates lead leaching)
 6. Combines all signals into a **composite 0–100 risk score** in real time
 
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {
-  'primaryColor':'#C1442D','primaryTextColor':'#fff','primaryBorderColor':'#8B3A2A',
-  'lineColor':'#C1442D','secondaryColor':'#f5e9e5','tertiaryColor':'#fff'}}}%%
-pie showData
-    title Composite Lead Risk Score — Signal Weighting
-    "Pipe Material Era (pre/post 1986 ban)" : 40
-    "Home Build Year & Housing Stock Age" : 25
-    "Utility Violation History (EPA SDWIS)" : 20
-    "Neighborhood Redlining Correlation (HUD)" : 15
-```
+Full methodology and exact weighting live at **`/methodology`**.
 
 ### The CCR Translation Pipeline
 
@@ -137,21 +134,6 @@ When a tenant sends a landlord notice through Plumbum, it is stored (anonymously
 - See which landlords have **refused** to test or remediate
 - Track properties with **positive lead test results**
 - Submit their own DIY water test results (lead ppb) to enrich the public dataset
-
-<br/>
-
-## 📊 Risk Score, Visualized
-
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {
-  'primaryColor':'#C1442D','primaryTextColor':'#fff','primaryBorderColor':'#8B3A2A',
-  'lineColor':'#8B3A2A'}}}%%
-xychart-beta
-    title "Search Volume Growth (illustrative)"
-    x-axis [Jan, Feb, Mar, Apr, May, Jun]
-    y-axis "Addresses Scored" 0 --> 50000
-    bar [4200, 8900, 15300, 24800, 36100, 47500]
-```
 
 <br/>
 
@@ -217,7 +199,7 @@ flowchart LR
 | `/methodology` | Full explainer of how the GBM scoring model works |
 | `/api-docs` | Live interactive API explorer (no Postman needed) |
 | `/extension` | Browser extension install guide & developer docs |
-| `/data` | Raw open dataset downloads |
+| `/data` | Open dataset of anonymized, crowdsourced water test results |
 
 <br/>
 
@@ -488,11 +470,6 @@ Returns local, state, and federal representatives with contact information.
 
 The Plumbum extension injects a **color-coded lead risk badge** on every property card you browse on Zillow and Redfin.
 
-<div align="center">
-  <img src="apps/web/public/extension-screenshot.png" alt="Plumbum browser extension risk badge on a Zillow listing" width="800" style="max-width:100%;border:1px solid #ddd;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.12);" />
-  <p style="font-size:0.95rem;color:#555;margin-top:12px;">Example screenshot of the Plumbum extension displaying a lead risk badge directly on a real-estate listing card.</p>
-</div>
-
 ### What it does
 - Detects Zillow and Redfin listing pages automatically
 - Extracts the property address from the listing DOM
@@ -507,7 +484,7 @@ extension/
 ├── manifest.json       # Manifest V3 — permissions: zillow.com, redfin.com
 ├── content.js          # Badge injection logic (runs on listing pages)
 ├── background.js       # Service worker — handles API calls from content script
-├── popup.html/js/css   # Popup UI shown when clicking the extension icon
+├── popup.html/js/css   # Extension popup UI
 └── icons/              # 16px, 32px, 48px, 128px icons
 ```
 
